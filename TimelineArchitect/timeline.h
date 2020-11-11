@@ -13,24 +13,29 @@ class Timeline : public QObject
     Q_OBJECT
 
 private:
-    unsigned int id;
     step _step;
-
-
-
-    std::vector<std::unique_ptr<Event>> _events;
+    QDate _start;
+    QDate _end;
+    TimeMaster _boss;
 
 public:
     explicit Timeline(QObject *parent = nullptr);
 
-    void sortByDate();
-    int AddEvent(Event);
+    bool Contains(QDate);
+    int Distance(QDate);
+    int Grow(QDate);
+    int ShrinkLeft(QDate);
+    int ShrinkRight(QDate);
+
+
+    int GetStart();
+    int GetEnd();
+
     int SetStep(step);
     step GetStep();
 
-
-
-signals:
+    void Save(QTextStream out);
+    void SaveWitchEvents(QTextStream out);
 
 };
 

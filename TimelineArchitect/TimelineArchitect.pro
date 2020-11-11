@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         event.cpp \
         main.cpp \
+        tags.cpp \
         timeline.cpp \
         timemaster.cpp
 
@@ -36,5 +37,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     StepType.h \
     event.h \
+    tags.h \
     timeline.h \
     timemaster.h

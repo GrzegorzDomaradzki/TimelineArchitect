@@ -5,18 +5,19 @@
 #include <QDate>
 #include<QFile>
 #include<QVector>
+#include<timemaster.h>
 
 class Event : public QObject
 {
     Q_OBJECT
 private:
-        unsigned int id;
+        unsigned int _id;
         QDate _startDate;
         QDate _endDate;
         bool _isBinary;
-        std::map<int,QString> OwnedTags;
+        std::vector<QString> _ownedTags;
+        TimeMaster* _boss;
 
-        int TryRegisterTag(QString);
 
 public:
         QString text;
@@ -24,16 +25,21 @@ public:
         QString name;
 
         QVector<QString> ReadTags;
-        bool AddTag(QString);
-        bool RemoveTag(int);
+        bool AddTag(QString TagName,QString& info);
+        bool RemoveTag(QString TagName);
 
-        Event reincarnate(QDate);
-        Event reincarnate(QDate,QDate);
-        void Save(QFile);
+        bool IsBinary();
+
+        bool reincarnate(QDate,QString& info);
+        bool reincarnate(QDate,QDate,QString& info);
+        void Save(QTextStream out);
 
 
 public:
     explicit Event(QObject *parent = nullptr);
+    explicit Event(TimeMaster* boss, QDate start, unsigned int id, QObject *parent = nullptr);
+    explicit Event(TimeMaster* boss, QDate start, unsigned int id, QDate end, QObject *parent = nullptr);
+        ~Event();
 
 signals:
 
