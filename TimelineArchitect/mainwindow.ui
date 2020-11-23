@@ -41,9 +41,8 @@
     <property name="title">
      <string>Timeline</string>
     </property>
-    <addaction name="actionAdd_event"/>
-    <addaction name="actionErase_selected"/>
     <addaction name="actionAdd_timeline"/>
+    <addaction name="actionErase_selected"/>
    </widget>
    <widget class="QMenu" name="menuTags">
     <property name="title">

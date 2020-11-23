@@ -51,3 +51,19 @@ void MainWindow::on_AddTagButt_clicked()
     msgBox.setText(info);
     msgBox.exec();
 }
+
+void MainWindow::on_actionAdd_timeline_triggered()
+{
+    NewTimeline dialog;
+    dialog.setModal(true);
+    dialog.SetMaster(timeEngine);
+    dialog.exec();
+}
+
+void MainWindow::on_actionAdd_Event_triggered()
+{
+    NewEvent dialog;
+    dialog.setModal(true);
+    dialog.SetMaster(timeEngine);
+    dialog.exec();
+}

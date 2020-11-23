@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <textformatcontrol.h>
+#include "newevent.h"
+#include "newtimeline.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,6 +33,10 @@ private slots:
     void on_actionEmpty_project_triggered();
 
     void on_AddTagButt_clicked();
+
+    void on_actionAdd_timeline_triggered();
+
+    void on_actionAdd_Event_triggered();
 
 signals:
 
