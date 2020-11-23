@@ -2,24 +2,26 @@
 #define TIMELINE_H
 
 #include <QObject>
-#include <QQuickItem>
-#include <QWidget>
-#include<event.h>
-#include <StepType.h>
-#include<memory>
+
+#include <steptype.h>
+#include <memory>
+#include <QTextStream>
+#include <event.h>
+
 
 class Timeline : public QObject
 {
     Q_OBJECT
 
 private:
-    step _step;
+    std::shared_ptr<StepType> _step;
     QDate _start;
     QDate _end;
-    TimeMaster _boss;
+
 
 public:
     explicit Timeline(QObject *parent = nullptr);
+    explicit Timeline(QDate start,QDate end,Unit unit, int Jump,QObject *parent = nullptr);
 
     bool Contains(QDate);
     int Distance(QDate);
@@ -28,14 +30,14 @@ public:
     int ShrinkRight(QDate);
 
 
-    int GetStart();
-    int GetEnd();
+    QDate GetStart();
+    QDate GetEnd();
 
-    int SetStep(step);
-    step GetStep();
+    int SetStep(Unit unit, int Jump);
+    std::shared_ptr<StepType> GetStep();
 
     void Save(QTextStream out);
-    void SaveWitchEvents(QTextStream out);
+    //void SaveWitchEvents(QTextStream out, std::vector<Event> events);
 
 };
 

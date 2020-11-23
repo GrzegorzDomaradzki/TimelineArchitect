@@ -14,11 +14,11 @@ bool Event::AddTag(QString TagName, QString& info)
         info = "Event alredy has this tag";
         return false;
     }
-    int succ = _boss->tags->RegisterTagOwner(TagName,_id);
+    int succ = _Tags->RegisterTagOwner(TagName,_id);
     if (succ==-1)
     {
-        _boss->tags->RegisterTag(TagName);
-        _boss->tags->RegisterTagOwner(TagName,_id);
+        _Tags->RegisterTag(TagName);
+        _Tags->RegisterTagOwner(TagName,_id);
     }
     _ownedTags.push_back(TagName);
     std::sort(_ownedTags.begin(), _ownedTags.end());
@@ -41,12 +41,24 @@ bool Event::IsBinary()
     return _isBinary;
 }
 
+QDate Event::GetDateStart()
+{
+    return _startDate;
+}
+
+QDate Event::GetDateEnd()
+{
+    if (!_isBinary) return _endDate;
+    return _startDate;
+}
+
 bool Event::reincarnate(QDate date1, QString& info)
 {
     QDate OldDate = _startDate;
     _startDate = date1;
-    auto done = _boss->ShiftEvent(this,info);
-    if (done)return 1;
+    auto to_emit = _id;
+    emit OnDateChange(to_emit);
+    if (to_emit==_id)return 1;
     _startDate = OldDate;
     return 0;
 
@@ -58,8 +70,9 @@ bool Event::reincarnate(QDate date1,QDate date2, QString& info)
     QDate OldDate = _startDate, OldDate2 = _endDate;
     _startDate = date1;
     _endDate = date2;
-    auto done = _boss->ShiftEvent(this,info);
-    if (done)return 1;
+    auto to_emit = _id;
+    emit OnDateChange(to_emit);
+    if (to_emit==_id)return 1;
     _startDate = OldDate;
     _endDate = OldDate2;
     return 0;
@@ -87,18 +100,18 @@ Event::Event(QObject *parent) : QObject(parent)
     throw "not enough data";
 }
 
-Event::Event(TimeMaster* boss,QDate start,unsigned int id, QObject *parent): QObject(parent),_id(id), _startDate(start),_isBinary(1),_boss(boss)
+Event::Event(Tags* boss,QDate start,unsigned int id, QObject *parent): QObject(parent),_id(id),_startDate(start), _isBinary(1),_Tags(boss)
 {
 }
 
-Event::Event(TimeMaster* boss,QDate start,unsigned int id, QDate end, QObject *parent): QObject(parent),_id(id), _startDate(start),_endDate(end),_isBinary(0),_boss(boss)
+Event::Event(Tags* boss,QDate start,unsigned int id, QDate end, QObject *parent): QObject(parent),_id(id), _startDate(start),_endDate(end),_isBinary(0),_Tags(boss)
 {
 }
 
 Event::~Event()
 {
-    auto tags = _boss->tags;
+
     foreach (auto TagName, _ownedTags) {
-        tags->UnregisterTagOwner(TagName,_id);
+        _Tags->UnregisterTagOwner(TagName,_id);
     }
 }

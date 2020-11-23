@@ -5,57 +5,81 @@ Timeline::Timeline(QObject *parent) : QObject(parent)
 
 }
 
-bool Timeline::Contains(QDate)
+Timeline::Timeline(QDate start, QDate end, Unit unit, int Jump, QObject *parent): QObject(parent), _start(start), _end(end)
 {
+    _step = std::make_shared<StepType>(unit,Jump);
+}
+
+bool Timeline::Contains(QDate date)
+{
+    if(_start<date || _end>date) return true;
+    return false;
+}
+
+int Timeline::Distance(QDate date)
+{
+    if (Contains(date)) return 0;
+    if (_start>date)  return -date.daysTo(_start);
+    return _end.daysTo(date);
 
 }
 
-int Timeline::Distance(QDate)
+int Timeline::Grow(QDate date)
 {
-
+    int dist = Distance(date);
+    if (dist==0) return 0;
+    if(dist>0) _end=date;
+    else _start=date;
+    return dist;
 }
 
-int Timeline::Grow(QDate)
+int Timeline::ShrinkLeft(QDate date)
 {
-
+    int to_ret = _start.daysTo(date);
+    _start=date;
+    return to_ret;
 }
 
-int Timeline::ShrinkLeft(QDate)
+int Timeline::ShrinkRight(QDate date)
 {
-
+    int to_ret = date.daysTo(_end);
+    _end=date;
+    return to_ret;
 }
 
-int Timeline::ShrinkRight(QDate)
+QDate Timeline::GetStart()
 {
-
+    return _start;
 }
 
-int Timeline::GetStart()
+QDate Timeline::GetEnd()
 {
-
+    return _end;
 }
 
-int Timeline::GetEnd()
+int Timeline::SetStep(Unit unit, int Jump)
 {
 
+
+    _step->jump = Jump;
+    _step->unit = unit;
+    return 1;
 }
 
-int Timeline::SetStep(step)
+std::shared_ptr<StepType> Timeline::GetStep()
 {
-
-}
-
-step Timeline::GetStep()
-{
-
+    return _step;
 }
 
 void Timeline::Save(QTextStream out)
 {
+    out<<"<Timeline>\n";
+    out<< "\t<StartDate> " << _start.toString() <<" </StartDate>\n";
+    out<< "\t<EndDate> " << _end.toString() <<" </EndDate>\n";
+
+    out<< "\t<Step>" << UnitNames.at(_step->unit) << " " << _step->jump << "</Step>\n";
+    out<<"</Timeline>\n";
 
 }
 
-void Timeline::SaveWitchEvents(QTextStream out)
-{
 
-}

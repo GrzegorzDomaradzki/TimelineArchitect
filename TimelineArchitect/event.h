@@ -3,9 +3,11 @@
 
 #include <QObject>
 #include <QDate>
-#include<QFile>
-#include<QVector>
-#include<timemaster.h>
+#include <QFile>
+#include <QVector>
+#include <QTextStream>
+#include <tags.h>
+
 
 class Event : public QObject
 {
@@ -16,7 +18,7 @@ private:
         QDate _endDate;
         bool _isBinary;
         std::vector<QString> _ownedTags;
-        TimeMaster* _boss;
+        Tags* _Tags;
 
 
 public:
@@ -25,10 +27,12 @@ public:
         QString name;
 
         QVector<QString> ReadTags;
-        bool AddTag(QString TagName,QString& info);
-        bool RemoveTag(QString TagName);
-
+        bool AddTag(QString TagName,QString& info) ;
+        bool RemoveTag(QString TagName) ;
         bool IsBinary();
+
+        QDate GetDateStart() ;
+        QDate GetDateEnd() ;
 
         bool reincarnate(QDate,QString& info);
         bool reincarnate(QDate,QDate,QString& info);
@@ -37,11 +41,14 @@ public:
 
 public:
     explicit Event(QObject *parent = nullptr);
-    explicit Event(TimeMaster* boss, QDate start, unsigned int id, QObject *parent = nullptr);
-    explicit Event(TimeMaster* boss, QDate start, unsigned int id, QDate end, QObject *parent = nullptr);
-        ~Event();
+    explicit Event(Tags* boss, QDate start, unsigned int id, QObject *parent = nullptr);
+    explicit Event(Tags* boss, QDate start, unsigned int id, QDate end, QObject *parent = nullptr);
+        ~Event() override;
+
+public slots:
 
 signals:
+    void OnDateChange(unsigned &id);
 
 };
 
