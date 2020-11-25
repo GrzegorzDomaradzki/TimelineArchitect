@@ -1,6 +1,7 @@
-#include "newevent.h"
+#include "newevent_View.h"
 #include "ui_newevent.h"
 #include <QDebug>
+#include <QMessageBox>
 
 NewEvent::NewEvent(QWidget *parent) :
     QDialog(parent),
@@ -21,7 +22,19 @@ void NewEvent::SetMaster(TimeMaster *master)
 
 void NewEvent::on_buttonBox_accepted()
 {
- qDebug() << "accept";
+    Event* event;
+    if(ui->EndDate->isEnabled()) event = new Event(_master->tags,ui->StartDate->date(),ui->EndDate->date(),_master);
+    else event = new Event(_master->tags,ui->StartDate->date(),_master);
+    QString info;
+    if(_master->AddEvent(event,info)==-1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText(info);
+        msgBox.exec();
+        return;
+        delete event;
+    }
+    this->close();
 }
 
 void NewEvent::on_LongTime_stateChanged(int arg1)

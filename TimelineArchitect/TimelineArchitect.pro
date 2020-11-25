@@ -16,11 +16,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    centralframe_View.cpp \
     event.cpp \
+    eventframe_View.cpp \
     main.cpp \
     mainwindow.cpp \
-    newevent.cpp \
-    newtimeline.cpp \
+    newevent_View.cpp \
+    newtimeline_View.cpp \
     steptype.cpp \
     tags.cpp \
     textformatcontrol.cpp \
@@ -28,10 +30,12 @@ SOURCES += \
     timemaster.cpp
 
 HEADERS += \
+    centralframe_View.h \
     event.h \
+    eventframe_View.h \
     mainwindow.h \
-    newevent.h \
-    newtimeline.h \
+    newevent_View.h \
+    newtimeline_View.h \
     steptype.h \
     tags.h \
     textformatcontrol.h \
@@ -39,9 +43,11 @@ HEADERS += \
     timemaster.h
 
 FORMS += \
+    centralframe_View.ui \
+    eventframe_View.ui \
     mainwindow.ui \
-    newevent.ui \
-    newtimeline.ui
+    newevent_View.ui \
+    newtimeline_View.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

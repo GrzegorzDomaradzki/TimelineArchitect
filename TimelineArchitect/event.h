@@ -13,7 +13,7 @@ class Event : public QObject
 {
     Q_OBJECT
 private:
-        unsigned int _id;
+
         QDate _startDate;
         QDate _endDate;
         bool _isBinary;
@@ -25,6 +25,8 @@ public:
         QString text;
         QString multimedia;
         QString name;
+        unsigned NumberInLine;
+        unsigned int id;
 
         QVector<QString> ReadTags;
         bool AddTag(QString TagName,QString& info) ;
@@ -41,8 +43,8 @@ public:
 
 public:
     explicit Event(QObject *parent = nullptr);
-    explicit Event(Tags* boss, QDate start, unsigned int id, QObject *parent = nullptr);
-    explicit Event(Tags* boss, QDate start, unsigned int id, QDate end, QObject *parent = nullptr);
+    explicit Event(Tags* boss, QDate start,  QObject *parent = nullptr);
+    explicit Event(Tags* boss, QDate start,  QDate end, QObject *parent = nullptr);
         ~Event() override;
 
 public slots:

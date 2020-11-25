@@ -9,8 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     timeEngine = new TimeMaster(this);
-
-
+    centralFrame = new CentralFrame(centralWidget());
+    centralFrame->setObjectName(QString::fromUtf8("frame"));
+    centralFrame->setFrameShape(QFrame::StyledPanel);
+    centralFrame->setFrameShadow(QFrame::Raised);
+    ui->verticalLayout_4->addWidget(centralFrame);
 
 }
 
@@ -20,6 +23,7 @@ MainWindow::~MainWindow()
 {
     delete  timeEngine;
     delete ui;
+
 }
 
 
@@ -38,8 +42,8 @@ void MainWindow::on_actionEmpty_project_triggered()
 
 void MainWindow::on_AddTagButt_clicked()
 {
-    QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-                                             tr("User name:"), QLineEdit::Normal);
+    QString text = QInputDialog::getText(this, tr("Add tag"),
+                                             tr("Tag name:"), QLineEdit::Normal);
     if (text.isEmpty()) return;
     QString info;
     if (TextFormatControl::TagName(text,info))
@@ -62,8 +66,21 @@ void MainWindow::on_actionAdd_timeline_triggered()
 
 void MainWindow::on_actionAdd_Event_triggered()
 {
+    if (timeEngine->EventCount()==0)
+    {
+        QString info = "First create timeline";
+        QMessageBox msgBox;
+        msgBox.setText(info);
+        msgBox.exec();
+        return;
+    }
     NewEvent dialog;
     dialog.setModal(true);
     dialog.SetMaster(timeEngine);
     dialog.exec();
+}
+
+void MainWindow::on_actionAdd_Tag_triggered()
+{
+    on_AddTagButt_clicked();
 }

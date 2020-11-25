@@ -20,6 +20,8 @@ private:
 
 
 public:
+    unsigned NumberInLine;
+
     explicit Timeline(QObject *parent = nullptr);
     explicit Timeline(QDate start,QDate end,Unit unit, int Jump,QObject *parent = nullptr);
 

@@ -28,7 +28,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDateEdit" name="dateEdit"/>
+          <widget class="QDateEdit" name="StartDate"/>
          </item>
         </layout>
        </item>
@@ -42,7 +42,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDateEdit" name="dateEdit_2"/>
+          <widget class="QDateEdit" name="EndDate"/>
          </item>
         </layout>
        </item>
@@ -60,30 +60,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="unit">
+          <widget class="QComboBox" name="Unit">
            <item>
             <property name="text">
-             <string>day</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>week</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>month</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>year</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>decade</string>
+             <string>millenium</string>
             </property>
            </item>
            <item>
@@ -93,7 +73,22 @@
            </item>
            <item>
             <property name="text">
-             <string>millenium</string>
+             <string>decade</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>year</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>month</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>day</string>
             </property>
            </item>
           </widget>
@@ -110,7 +105,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox">
+          <widget class="QSpinBox" name="Step">
+           <property name="minimum">
+            <number>1</number>
+           </property>
            <property name="maximum">
             <number>10000</number>
            </property>
