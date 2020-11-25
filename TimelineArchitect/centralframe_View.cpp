@@ -1,6 +1,8 @@
 #include "centralframe_View.h"
 #include "ui_centralframe.h"
 
+static inline QString fridgetMagnetsMimeType() { return QStringLiteral("application/x-eventframe_View"); }
+
 CentralFrame::CentralFrame(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::CentralFrame)
@@ -27,3 +29,6 @@ CentralFrame::~CentralFrame()
 {
     delete ui;
 }
+
+
+

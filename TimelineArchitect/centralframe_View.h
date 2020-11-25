@@ -6,6 +6,11 @@
 #include "event.h"
 #include <vector>
 
+QT_BEGIN_NAMESPACE
+class QDragEnterEvent;
+class QDropEvent;
+QT_END_NAMESPACE
+
 namespace Ui {
 class CentralFrame;
 }
@@ -17,7 +22,6 @@ class CentralFrame : public QFrame
 public:
     explicit CentralFrame(QWidget *parent = nullptr);
     ~CentralFrame();
-
 
 
 

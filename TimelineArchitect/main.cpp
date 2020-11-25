@@ -6,6 +6,7 @@
 
 int main(int argc, char *argv[])
 {
+    qputenv("QT_STYLE_OVERRIDE","Fusion");
     QApplication a(argc, argv);
     MainWindow w;
     w.show();

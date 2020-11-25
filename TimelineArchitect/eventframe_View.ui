@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>200</width>
-    <height>158</height>
+    <width>184</width>
+    <height>135</height>
    </rect>
   </property>
   <property name="cursor">
@@ -19,11 +19,20 @@
   <property name="mouseTracking">
    <bool>false</bool>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Frame</string>
   </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
+  </property>
   <property name="autoFillBackground">
    <bool>false</bool>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(228, 238, 236);</string>
   </property>
   <property name="frameShape">
    <enum>QFrame::Box</enum>
@@ -39,8 +48,11 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QWidget" name="">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QToolButton" name="toolButton">
@@ -68,7 +80,7 @@
             <colorrole role="Button">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -140,16 +152,16 @@
             <colorrole role="Base">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
+               <red>204</red>
+               <green>0</green>
+               <blue>0</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Window">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -167,9 +179,9 @@
             <colorrole role="AlternateBase">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>209</red>
-               <green>127</green>
-               <blue>127</blue>
+               <red>211</red>
+               <green>215</green>
+               <blue>207</blue>
               </color>
              </brush>
             </colorrole>
@@ -214,7 +226,7 @@
             <colorrole role="Button">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -286,16 +298,16 @@
             <colorrole role="Base">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
+               <red>204</red>
+               <green>0</green>
+               <blue>0</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Window">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -313,9 +325,9 @@
             <colorrole role="AlternateBase">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>209</red>
-               <green>127</green>
-               <blue>127</blue>
+               <red>211</red>
+               <green>215</green>
+               <blue>207</blue>
               </color>
              </brush>
             </colorrole>
@@ -360,7 +372,7 @@
             <colorrole role="Button">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -432,7 +444,7 @@
             <colorrole role="Base">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -441,7 +453,7 @@
             <colorrole role="Window">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
+               <red>204</red>
                <green>0</green>
                <blue>0</blue>
               </color>
@@ -459,9 +471,9 @@
             <colorrole role="AlternateBase">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>164</red>
-               <green>0</green>
-               <blue>0</blue>
+               <red>211</red>
+               <green>215</green>
+               <blue>207</blue>
               </color>
              </brush>
             </colorrole>
@@ -496,7 +508,11 @@
           </palette>
          </property>
          <property name="autoFillBackground">
-          <bool>true</bool>
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(204, 0, 0);
+alternate-background-color: rgb(211, 215, 207);</string>
          </property>
          <property name="text">
           <string>X</string>
@@ -504,15 +520,21 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_5">
+        <widget class="QLabel" name="label_2">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>24</height>
+           <height>17</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <italic>true</italic>
+          </font>
+         </property>
          <property name="text">
-          <string>placeholder</string>
+          <string>Title label</string>
          </property>
         </widget>
        </item>
@@ -542,9 +564,9 @@
             <colorrole role="Button">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>174</red>
-               <green>208</green>
-               <blue>170</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
@@ -614,18 +636,18 @@
             <colorrole role="Base">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Window">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>138</red>
-               <green>226</green>
-               <blue>52</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
@@ -688,9 +710,9 @@
             <colorrole role="Button">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>174</red>
-               <green>208</green>
-               <blue>170</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
@@ -760,18 +782,18 @@
             <colorrole role="Base">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>255</red>
-               <green>255</green>
-               <blue>255</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Window">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>138</red>
-               <green>226</green>
-               <blue>52</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
@@ -834,9 +856,9 @@
             <colorrole role="Button">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>174</red>
-               <green>208</green>
-               <blue>170</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
@@ -906,18 +928,18 @@
             <colorrole role="Base">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>138</red>
-               <green>226</green>
-               <blue>52</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
             <colorrole role="Window">
              <brush brushstyle="SolidPattern">
               <color alpha="255">
-               <red>138</red>
-               <green>226</green>
-               <blue>52</blue>
+               <red>228</red>
+               <green>238</green>
+               <blue>236</blue>
               </color>
              </brush>
             </colorrole>
@@ -975,66 +997,44 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>17</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>DateLabel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>17</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>Title label</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>17</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Description label</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Multimedia</string>
-     </property>
+     </widget>
+     <widget class="QWidget" name="">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>17</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>DateLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>17</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Description label</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
