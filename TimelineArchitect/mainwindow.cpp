@@ -77,7 +77,7 @@ void MainWindow::on_actionAdd_timeline_triggered()
 
 void MainWindow::on_actionAdd_Event_triggered()
 {
-    if (timeEngine->EventCount()==0)
+    if (timeEngine->TimelineCount()==0)
     {
         QString info = "First create timeline";
         QMessageBox msgBox;
@@ -85,10 +85,13 @@ void MainWindow::on_actionAdd_Event_triggered()
         msgBox.exec();
         return;
     }
-    NewEvent dialog;
+    Event* event = nullptr;
+    NewEvent dialog(event);
     dialog.setModal(true);
     dialog.SetMaster(timeEngine);
     dialog.exec();
+    if (event!=nullptr) centralFrame->AddEvent(event);
+
 }
 
 void MainWindow::on_actionAdd_Tag_triggered()

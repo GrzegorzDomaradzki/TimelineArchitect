@@ -14,10 +14,13 @@ class NewEvent : public QDialog
 
 private:
     TimeMaster* _master;
+    Event* _event;
+    bool _createMode;
 
 public:
     explicit NewEvent(QWidget *parent = nullptr);
     ~NewEvent();
+    NewEvent(Event*& event, bool createMode = true, QWidget *parent = nullptr);
 
     void SetMaster(TimeMaster* master);
 

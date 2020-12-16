@@ -8,25 +8,22 @@ CentralFrame::CentralFrame(QWidget *parent) :
     ui(new Ui::CentralFrame)
 {
     ui->setupUi(this);
-    generator = 0;
+    _generator = 0;
 
-    auto TestFrame1 =new EventFrame(generator++, this);
+    auto TestFrame1 =new EventFrame(_generator++, this);
     TestFrame1->setFrameShape(QFrame::StyledPanel);
     TestFrame1->setFrameShadow(QFrame::Raised);
-    events_views.insert(std::pair<unsigned,EventFrame*>(generator,TestFrame1));
-    connect(TestFrame1,SIGNAL(GiveMeStage(unsigned)),this,SLOT(OnStageRequest(unsigned)));
+    _events_views.insert(std::pair<unsigned,EventFrame*>(_generator,TestFrame1));
 
-    auto TestFrame2 = new EventFrame(generator++,this);
+    auto TestFrame2 = new EventFrame(_generator++,this);
     TestFrame2->setFrameShape(QFrame::StyledPanel);
     TestFrame2->setFrameShadow(QFrame::Raised);
-    events_views.insert(std::pair<unsigned,EventFrame*>(generator,TestFrame2));
-    connect(TestFrame2,SIGNAL(GiveMeStage(unsigned)),this,SLOT(OnStageRequest(unsigned)));
+    _events_views.insert(std::pair<unsigned,EventFrame*>(_generator,TestFrame2));
 
-    auto TestFrame3 =new EventFrame(generator++,this);
+    auto TestFrame3 =new EventFrame(_generator++,this);
     TestFrame3->setFrameShape(QFrame::StyledPanel);
     TestFrame3->setFrameShadow(QFrame::Raised);
-    events_views.insert(std::pair<unsigned,EventFrame*>(generator,TestFrame3));
-    connect(TestFrame3,SIGNAL(GiveMeStage(unsigned)),this,SLOT(OnStageRequest(unsigned)));
+    _events_views.insert(std::pair<unsigned,EventFrame*>(_generator,TestFrame3));
 }
 
 CentralFrame::~CentralFrame()
@@ -34,10 +31,14 @@ CentralFrame::~CentralFrame()
     delete ui;
 }
 
-void CentralFrame::OnStageRequest(unsigned id)
+void CentralFrame::AddEvent(Event *event)
 {
-    auto child = events_views[id];
+    auto newFrame = new EventFrame(_generator++,event,this);
+    newFrame->setFrameShape(QFrame::StyledPanel);
+    newFrame->setFrameShadow(QFrame::Raised);
+    _events_views.insert(std::pair<unsigned,EventFrame*>(_generator,newFrame));
 }
+
 
 
 

@@ -100,11 +100,11 @@ Event::Event(QObject *parent) : QObject(parent)
     throw "not enough data";
 }
 
-Event::Event(Tags* boss,QDate start, QObject *parent): QObject(parent),_startDate(start), _isBinary(1),_Tags(boss)
+Event::Event(Tags* boss,QDate start, QObject *parent): QObject(parent),_startDate(start), _isBinary(1),_Tags(boss), _x(-1),_y(-1)
 {
 }
 
-Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),_isBinary(0),_Tags(boss)
+Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),_isBinary(0),_Tags(boss), _x(-1),_y(-1)
 {
 }
 

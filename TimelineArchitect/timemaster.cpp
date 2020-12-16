@@ -43,7 +43,7 @@ int TimeMaster::AskForDate(QDate start)
 
 int TimeMaster::findPosition(int start, int end, QDate date)
 {
-    if (start==end) return end-1;
+    if (start>end) return end;
     int to_check = (start+end)/2;
     int dist = _timelines[to_check]->Distance(date);
     if (dist==0) return to_check;

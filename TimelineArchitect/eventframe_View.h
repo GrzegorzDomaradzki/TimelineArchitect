@@ -2,6 +2,7 @@
 #define EVENTFRAME_H
 
 #include <QFrame>
+#include "event.h"
 
 namespace Ui {
 class EventFrame;
@@ -14,6 +15,7 @@ class EventFrame : public QFrame
 public:
     explicit EventFrame(QWidget *parent = nullptr);
     EventFrame(unsigned new_id, QWidget *parent = nullptr);
+    EventFrame(unsigned new_id,Event* event, QWidget *parent = nullptr);
     ~EventFrame();
 
     void  mousePressEvent(QMouseEvent *event) override;
@@ -26,13 +28,13 @@ public:
 public slots:
 
 signals:
-    void GiveMeStage(unsigned id);
-    void forgetMe(unsigned id);
+    void forgetMe(unsigned _id);
 
 private:
     Ui::EventFrame *ui;
-    QPoint offset;
-    unsigned id;
+    Event* _event;
+    QPoint _offset;
+    unsigned _id;
 };
 
 #endif // EVENTFRAME_H

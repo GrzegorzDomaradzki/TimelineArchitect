@@ -22,19 +22,15 @@ class CentralFrame : public QFrame
 public:
     explicit CentralFrame(QWidget *parent = nullptr);
     ~CentralFrame();
-
-
-public slots:
-    void OnStageRequest(unsigned id);
+    void AddEvent(Event* event);
 
 
 
 private:
-    unsigned generator;
-       std::map<unsigned,EventFrame*> events_views;
-        std::vector<unsigned> toDelete;
-        std::vector<unsigned> selected;
-
+    unsigned _generator;
+       std::map<unsigned,EventFrame*> _events_views;
+        std::vector<unsigned> _toDelete;
+        std::vector<unsigned> _selected;
     Ui::CentralFrame *ui;
 
 };

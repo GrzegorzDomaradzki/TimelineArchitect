@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>184</width>
-    <height>135</height>
+    <width>216</width>
+    <height>156</height>
    </rect>
   </property>
   <property name="cursor">
@@ -52,8 +52,11 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
        <item>
         <widget class="QToolButton" name="toolButton">
          <property name="enabled">
@@ -520,7 +523,7 @@ alternate-background-color: rgb(211, 215, 207);</string>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_2">
+        <widget class="QLabel" name="TitleLab">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -998,10 +1001,10 @@ alternate-background-color: rgb(211, 215, 207);</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="DateLab">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -1021,7 +1024,7 @@ alternate-background-color: rgb(211, 215, 207);</string>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="DescLab">
          <property name="maximumSize">
           <size>
            <width>16777215</width>

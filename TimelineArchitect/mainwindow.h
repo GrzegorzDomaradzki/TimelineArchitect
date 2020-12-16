@@ -28,7 +28,7 @@ public:
 private:
     Ui::MainWindow *ui;
     TimeMaster *timeEngine;
-    CentralFrame *centralFrame;\
+    CentralFrame *centralFrame;
     QStringListModel *tagList;
 
 private slots:
