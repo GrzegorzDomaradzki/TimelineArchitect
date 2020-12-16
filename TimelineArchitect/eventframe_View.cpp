@@ -12,6 +12,14 @@ EventFrame::EventFrame(QWidget *parent) :
 
 }
 
+EventFrame::EventFrame(unsigned new_id, QWidget *parent) :
+    QFrame(parent),
+    ui(new Ui::EventFrame)
+{
+    ui->setupUi(this);
+    id = new_id;
+}
+
 EventFrame::~EventFrame()
 {
     delete ui;
@@ -21,6 +29,8 @@ EventFrame::~EventFrame()
 void EventFrame::mousePressEvent(QMouseEvent *event)
 {
     offset = event->pos();
+    this->raise();
+    emit GiveMeStage(id);
 }
 
 

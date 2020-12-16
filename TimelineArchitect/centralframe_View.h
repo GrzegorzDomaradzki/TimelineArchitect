@@ -24,11 +24,14 @@ public:
     ~CentralFrame();
 
 
+public slots:
+    void OnStageRequest(unsigned id);
 
 
 
 private:
-       std::vector<EventFrame*> events_views;
+    unsigned generator;
+       std::map<unsigned,EventFrame*> events_views;
         std::vector<unsigned> toDelete;
         std::vector<unsigned> selected;
 
