@@ -11,6 +11,7 @@
 #include "newtimeline_View.h"
 #include "eventframe_View.h"
 #include "centralframe_View.h"
+#include <QStringListModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -27,10 +28,10 @@ public:
 private:
     Ui::MainWindow *ui;
     TimeMaster *timeEngine;
-    CentralFrame *centralFrame;
+    CentralFrame *centralFrame;\
+    QStringListModel *tagList;
 
 private slots:
-
 
 
     void on_actionEmpty_project_triggered();
@@ -42,6 +43,10 @@ private slots:
     void on_actionAdd_Event_triggered();
 
     void on_actionAdd_Tag_triggered();
+
+    void on_TagList_doubleClicked(const QModelIndex &index);
+
+    void on_EraseTagButt_2_clicked();
 
 signals:
 

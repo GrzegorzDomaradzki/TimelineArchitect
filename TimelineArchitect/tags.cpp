@@ -22,6 +22,7 @@ int Tags::RegisterTag(QString tag)
 int Tags::RenameTag(QString oldName, QString newName)
 {
     if (!HasTag(oldName)) return -1;
+    if (HasTag(newName)) return -1;
     _tagsNames[newName] = _tagsNames[oldName];
     _tagsNames.erase(oldName);
     emit OnTagModify();
@@ -46,10 +47,10 @@ int Tags::UnregisterTagOwner(QString tag, unsigned owner)
 
 int Tags::DeleteTag(QString tag)
 {
+    if(!HasTag(tag)) return -1;
     emit OnDeletedTag(tag);
     unsigned tagId = _tagsNames[tag];
     _tagsNames.erase(tag);
     _tagOwners.erase(tagId);
-    emit OnTagModify();
     return 0;
 }

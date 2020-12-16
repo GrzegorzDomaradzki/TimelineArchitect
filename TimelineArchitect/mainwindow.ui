@@ -105,17 +105,10 @@
              </item>
             </layout>
            </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_3">
-             <property name="text">
-              <string>Rename Tag</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
          <item>
-          <widget class="QListView" name="listView"/>
+          <widget class="QListView" name="TagList"/>
          </item>
         </layout>
        </item>
