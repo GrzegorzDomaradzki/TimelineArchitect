@@ -17,7 +17,10 @@ private:
     std::shared_ptr<StepType> _step;
     QDate _start;
     QDate _end;
+    QDate _readPos;
+    unsigned _length;
 
+    unsigned _startRel;
 
 public:
     unsigned NumberInLine;
@@ -31,15 +34,26 @@ public:
     int ShrinkLeft(QDate);
     int ShrinkRight(QDate);
 
+    unsigned GetLength();
+    void UpdateLength();
+    void SetStartRel(unsigned x);
+    unsigned GetStartRel();
+    unsigned GetEndRel();
+
+
+    std::vector<QString> GetText(unsigned start, unsigned end); //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//
 
     QDate GetStart();
+
+
     QDate GetEnd();
+
 
     int SetStep(Unit unit, int Jump);
     std::shared_ptr<StepType> GetStep();
 
     void Save(QTextStream out);
-    //void SaveWitchEvents(QTextStream out, std::vector<Event> events);
+
 
 };
 

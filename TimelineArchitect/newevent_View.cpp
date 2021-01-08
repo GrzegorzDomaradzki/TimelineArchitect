@@ -15,9 +15,9 @@ NewEvent::~NewEvent()
     delete ui;
 }
 
-NewEvent::NewEvent(Event*& event, bool createMode, QWidget *parent):
+NewEvent::NewEvent(bool createMode, QWidget *parent):
     QDialog(parent),
-    _event(event),
+    _event(nullptr),
     _createMode(createMode),
     ui(new Ui::NewEvent)
 {
@@ -26,6 +26,11 @@ NewEvent::NewEvent(Event*& event, bool createMode, QWidget *parent):
     {
         //TODO: Set to edit
     }
+}
+
+Event *NewEvent::GetEvent()
+{
+    return _event;
 }
 
 void NewEvent::SetMaster(TimeMaster *master)
@@ -38,6 +43,8 @@ void NewEvent::on_buttonBox_accepted()
     if(ui->EndDate->isEnabled()) _event = new Event(_master->tags,ui->StartDate->date(),ui->EndDate->date(),_master);
     else _event = new Event(_master->tags,ui->StartDate->date(),_master);
     QString info;
+    _event->name=ui->Title->text();
+    _event->text=ui->textEdit->toPlainText();
     if (_createMode)
     {
     if(_master->AddEvent(_event,info)==-1)

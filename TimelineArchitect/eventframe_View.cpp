@@ -1,7 +1,6 @@
 #include "eventframe_View.h"
 #include "ui_eventframe_View.h"
-#include <QMouseEvent>
-#include <QColor>
+
 
 EventFrame::EventFrame(QWidget *parent) :
     QFrame(parent),
@@ -36,6 +35,7 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
         date += "-" + event->GetDateEnd().toString();
         ui->DateLab->setText(date);
     }
+    this->raise();
 }
 
 EventFrame::~EventFrame()

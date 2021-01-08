@@ -3,6 +3,8 @@
 
 #include <QFrame>
 #include "event.h"
+#include <QMouseEvent>
+#include <QColor>
 
 namespace Ui {
 class EventFrame;

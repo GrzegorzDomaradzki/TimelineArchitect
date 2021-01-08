@@ -20,7 +20,8 @@ private:
 public:
     explicit NewEvent(QWidget *parent = nullptr);
     ~NewEvent();
-    NewEvent(Event*& event, bool createMode = true, QWidget *parent = nullptr);
+    NewEvent(bool createMode = true, QWidget *parent = nullptr);
+    Event* GetEvent();
 
     void SetMaster(TimeMaster* master);
 

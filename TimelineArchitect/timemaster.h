@@ -18,12 +18,11 @@ class TimeMaster : public QObject
     Q_OBJECT
 private:
 
-    std::vector<std::shared_ptr<Timeline>> _timelines;
-    std::vector<std::shared_ptr<Event>> _events;
+    std::vector<Timeline*> _timelines;
+    std::vector<Event*> _events;
     std::vector<unsigned> _events_id;
     int _currID;
-
-
+    unsigned _length;
 
 
 public:
@@ -52,6 +51,8 @@ public:
      int SaveProject(QFile);
      int LoadProject(QFile);
      int getNewId();
+     unsigned getLength();
+     void updateLength();
 
 signals:
 

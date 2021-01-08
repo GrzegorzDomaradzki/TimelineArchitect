@@ -85,11 +85,10 @@ void MainWindow::on_actionAdd_Event_triggered()
         msgBox.exec();
         return;
     }
-    Event* event = nullptr;
-    NewEvent dialog(event);
-    dialog.setModal(true);
+    NewEvent dialog(true);
     dialog.SetMaster(timeEngine);
     dialog.exec();
+    Event* event = dialog.GetEvent();
     if (event!=nullptr) centralFrame->AddEvent(event);
 
 }

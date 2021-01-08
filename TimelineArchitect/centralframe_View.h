@@ -5,6 +5,9 @@
 #include "eventframe_View.h"
 #include "event.h"
 #include <vector>
+#include <QPainter>
+#include <QMouseEvent>
+#include <QColor>
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
@@ -23,15 +26,34 @@ public:
     explicit CentralFrame(QWidget *parent = nullptr);
     ~CentralFrame();
     void AddEvent(Event* event);
+    int GetResolution();
+    void SetResolution(int res);
+    void UpdateTimelineData();
+
+    void paintEvent(QPaintEvent *event) override;
+    void  mousePressEvent(QMouseEvent *event) override;
 
 
+    void mouseMoveEvent(QMouseEvent *event) override;
+
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+    void moveEvents(int diff);
+
+
+
+    Qt::GlobalColor color;
 
 private:
     unsigned _generator;
-       std::map<unsigned,EventFrame*> _events_views;
-        std::vector<unsigned> _toDelete;
-        std::vector<unsigned> _selected;
+    std::map<unsigned,EventFrame*> _eventsViews;
+    std::vector<unsigned> _toDelete;
+    std::vector<unsigned> _selected;
     Ui::CentralFrame *ui;
+    unsigned int _relativePosition;
+    QPoint _offset;
+    int _resolution;
+    int _end;
 
 };
 

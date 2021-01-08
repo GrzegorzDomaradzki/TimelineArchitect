@@ -3,11 +3,18 @@
 TimeMaster::TimeMaster(QObject *parent) : QObject(parent)
 {
     tags = new Tags();
+    _currID = 0;
 }
 
 TimeMaster::~TimeMaster()
 {
+    foreach (auto timeline, _timelines) {
+        delete timeline;
+    }
 
+    foreach (auto event, _events) {
+        delete event;
+    }
     delete tags;
 }
 
@@ -43,17 +50,18 @@ int TimeMaster::AskForDate(QDate start)
 
 int TimeMaster::findPosition(int start, int end, QDate date)
 {
-    if (start>end) return end;
+    if (start==end)return start;
     int to_check = (start+end)/2;
     int dist = _timelines[to_check]->Distance(date);
     if (dist==0) return to_check;
     if (dist<0) return findPosition(start,to_check-1,date);
     return findPosition(to_check+1,end,date);
+
 }
 
 int TimeMaster::findEventPosition(int start, int end, QDate date)
 {
-    if (start==end) return end-1;
+    if (start==end) return start;
     int to_check = (start+end)/2;
     QDate event_date = _events[to_check]->GetDateStart();
     if (event_date==date) return to_check;
@@ -67,7 +75,7 @@ int TimeMaster::AddTimeline(Timeline* timeline, int& succes,QString &info)
     if (_timelines.empty())
     {
         timeline->NumberInLine = 0;
-        _timelines.push_back(std::make_shared<Timeline>(timeline));
+        _timelines.push_back(timeline);
         return 0;
     }
     int pos = findPosition(0,_timelines.size()-1,timeline->GetStart());
@@ -98,7 +106,7 @@ int TimeMaster::AddTimeline(Timeline* timeline, int& succes,QString &info)
     {
         _timelines[i]->NumberInLine++;
     }
-    _timelines.insert(_timelines.begin()+pos+1,std::make_shared<Timeline>(timeline));
+    _timelines.insert(_timelines.begin()+pos,timeline);
     return timeline->NumberInLine;
 }
 
@@ -124,13 +132,16 @@ int TimeMaster::AddEvent(Event* event, QString &info)
             return -1;
         }
     }
-    auto pos = findEventPosition(0,_events.size()-1,event->GetDateStart())+1;
+    int pos;
+    if (EventCount()>0)
+    pos = findEventPosition(0,_events.size()-1,event->GetDateStart())+1;
+    else pos = 0;
     for (unsigned i = pos+1; i<_events.size();i++)
     {
         _events[i]->NumberInLine++;
     }
-    _events.insert(_events.begin()+pos+1,std::make_shared<Event>(event));
-    _events_id.insert(_events_id.begin()+pos+1,_currID);
+    _events.insert(_events.begin()+pos,event);
+    _events_id.insert(_events_id.begin()+pos,_currID);
     event->id = _currID;
     return event->NumberInLine = pos+1;
 }
@@ -138,4 +149,19 @@ int TimeMaster::AddEvent(Event* event, QString &info)
 bool TimeMaster::ShiftEvent(Event &event, QString &info)
 {
 
+}
+
+void TimeMaster::updateLength()
+{
+    unsigned length = 0;
+    foreach(auto timeline, _timelines)
+    {
+        length+=timeline->GetLength();
+    }
+    _length = length;
+}
+
+unsigned TimeMaster::getLength()
+{
+    return _length;
 }
