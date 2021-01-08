@@ -6,10 +6,10 @@
 #include <map>
 
 
-enum Unit
+enum StepType
 {millennium, century, decade, year, month, day};
 
-const static std::map<Unit,QString> UnitNames= {
+const static std::map<StepType,QString> UnitNames= {
     {millennium, "millennium"},
     {century,"century"},
     {decade,"decade"},
@@ -18,12 +18,4 @@ const static std::map<Unit,QString> UnitNames= {
     {day,"day"} };
 
 
-class StepType{
-public:
-    int jump;
-    Unit unit;
-
-
-    StepType(Unit New_Unit, int new_jump);
-};
 #endif // STEPTYPE_H

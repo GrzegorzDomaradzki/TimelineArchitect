@@ -1,5 +1,5 @@
 #include "newtimeline_View.h"
-#include "ui_newtimeline.h"
+#include "ui_newtimeline_View.h"
 #include <QDebug>
 #include <QMessageBox>
 
@@ -24,7 +24,7 @@ void NewTimeline::SetMaster(TimeMaster *master)
 void NewTimeline::on_buttonBox_accepted()
 {
 
-    Timeline* timeline = new Timeline(ui->StartDate->date(),ui->EndDate->date(),static_cast<Unit>(ui->Unit->currentIndex()),ui->Step->value(),_master);
+    Timeline* timeline = new Timeline(ui->StartDate->date(),ui->EndDate->date(),(StepType)ui->Unit->currentIndex(),_master);
     QString info;
     int OK;
     _master->AddTimeline(timeline,OK,info);

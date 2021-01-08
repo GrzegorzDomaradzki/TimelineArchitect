@@ -5,9 +5,9 @@ Timeline::Timeline(QObject *parent) : QObject(parent)
 
 }
 
-Timeline::Timeline(QDate start, QDate end, Unit unit, int Jump, QObject *parent): QObject(parent), _start(start), _end(end), _readPos(start),_startRel(0)
+Timeline::Timeline(QDate start, QDate end, StepType unit, QObject *parent): QObject(parent), _start(start), _end(end), _readPos(start),_startRel(0)
 {
-    _step = std::make_shared<StepType>(unit,Jump);
+    _step = unit;
     UpdateLength();
 }
 
@@ -58,23 +58,21 @@ unsigned Timeline::GetLength()
 
 void Timeline::UpdateLength()
 {
-    int x = 0;
-    switch (_step->unit)
+    switch (_step)
     {
-    case day: x=_start.daysTo(_end);
+    case day: _length=_start.daysTo(_end);
         break;
-    case month: x= _end.month() - _start.month()+(_end.year()-_start.year())*12;
+    case month: _length= _end.month() - _start.month()+(_end.year()-_start.year())*12;
         break;
-    case year: x = _end.year()-_start.year();
+    case year: _length = _end.year()-_start.year();
         break;
-    case decade:x = _end.year()-_start.year()/10;
+    case decade:_length = _end.year()-_start.year()/10;
         break;
-    case century:x = _end.year()-_start.year()/100;
+    case century:_length = _end.year()-_start.year()/100;
         break;
-    case millennium:x = _end.year()-_start.year()/1000;
+    case millennium:_length = _end.year()-_start.year()/1000;
         break;
     }
-    _length = x/_step->jump;
 }
 
 void Timeline::SetStartRel(unsigned x)
@@ -114,17 +112,16 @@ QDate Timeline::GetEnd()
     return _end;
 }
 
-int Timeline::SetStep(Unit unit, int Jump)
+int Timeline::SetStep(StepType unit)
 {
 
 
-    _step->jump = Jump;
-    _step->unit = unit;
+    _step = unit;
     UpdateLength();
     return 1;
 }
 
-std::shared_ptr<StepType> Timeline::GetStep()
+StepType Timeline::GetStep()
 {
     return _step;
 }
@@ -135,7 +132,7 @@ void Timeline::Save(QTextStream out)
     out<< "\t<StartDate> " << _start.toString() <<" </StartDate>\n";
     out<< "\t<EndDate> " << _end.toString() <<" </EndDate>\n";
 
-    out<< "\t<Step>" << UnitNames.at(_step->unit) << " " << _step->jump << "</Step>\n";
+    out<< "\t<Step>" << UnitNames.at(_step) <<"</Step>\n";
     out<<"</Timeline>\n";
 
 }

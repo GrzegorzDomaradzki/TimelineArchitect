@@ -14,7 +14,7 @@ class Timeline : public QObject
     Q_OBJECT
 
 private:
-    std::shared_ptr<StepType> _step;
+    StepType _step;
     QDate _start;
     QDate _end;
     QDate _readPos;
@@ -26,7 +26,7 @@ public:
     unsigned NumberInLine;
 
     explicit Timeline(QObject *parent = nullptr);
-    explicit Timeline(QDate start,QDate end,Unit unit, int Jump,QObject *parent = nullptr);
+    explicit Timeline(QDate start,QDate end,StepType stepType,QObject *parent = nullptr);
 
     bool Contains(QDate);
     int Distance(QDate);
@@ -49,8 +49,8 @@ public:
     QDate GetEnd();
 
 
-    int SetStep(Unit unit, int Jump);
-    std::shared_ptr<StepType> GetStep();
+    int SetStep(StepType unit);
+    StepType GetStep();
 
     void Save(QTextStream out);
 

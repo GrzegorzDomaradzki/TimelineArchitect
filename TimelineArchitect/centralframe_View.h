@@ -8,6 +8,7 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QColor>
+#include <QPainterPath>
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
@@ -39,7 +40,8 @@ public:
     void mouseReleaseEvent(QMouseEvent *event) override;
 
     void moveEvents(int diff);
-
+    void PrintDate(unsigned,QPainter*);
+    void PrintArrow(unsigned,QPainter*);
 
 
     Qt::GlobalColor color;
