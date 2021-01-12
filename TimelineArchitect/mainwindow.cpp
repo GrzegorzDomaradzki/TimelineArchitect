@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     centralFrame->setObjectName(QString::fromUtf8("frame"));
     centralFrame->setFrameShape(QFrame::StyledPanel);
     centralFrame->setFrameShadow(QFrame::Raised);
+    centralFrame->timeEngine = timeEngine;
     ui->verticalLayout_4->addWidget(centralFrame);
     tagList = new QStringListModel(this);
     ui->TagList->setModel(tagList);
@@ -73,6 +74,8 @@ void MainWindow::on_actionAdd_timeline_triggered()
     dialog.setModal(true);
     dialog.SetMaster(timeEngine);
     dialog.exec();
+
+    centralFrame->UpdateTimelineData();
 }
 
 void MainWindow::on_actionAdd_Event_triggered()

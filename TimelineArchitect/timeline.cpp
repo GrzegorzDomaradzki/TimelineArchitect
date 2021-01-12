@@ -13,7 +13,7 @@ Timeline::Timeline(QDate start, QDate end, StepType unit, QObject *parent): QObj
 
 bool Timeline::Contains(QDate date)
 {
-    if(_start<date || _end>date) return true;
+    if(_start<date && _end>date) return true;
     return false;
 }
 
@@ -61,18 +61,28 @@ void Timeline::UpdateLength()
     switch (_step)
     {
     case day: _length=_start.daysTo(_end);
+        _multi = 1;
+        break;
+    case week: _length=_start.daysTo(_end)/7;
+        _multi = 7;
         break;
     case month: _length= _end.month() - _start.month()+(_end.year()-_start.year())*12;
+        _multi = 1;
         break;
     case year: _length = _end.year()-_start.year();
+        _multi = 1;
         break;
-    case decade:_length = _end.year()-_start.year()/10;
+    case decade:_length = (_end.year()-_start.year())/10;
+        _multi = 10;
         break;
-    case century:_length = _end.year()-_start.year()/100;
+    case century:_length = (_end.year()-_start.year())/100;
+        _multi = 100;
         break;
-    case millennium:_length = _end.year()-_start.year()/1000;
+    case millennium:_length = (_end.year()-_start.year())/1000;
+        _multi = 1000;
         break;
     }
+    if (_length==0)_length=1;
 }
 
 void Timeline::SetStartRel(unsigned x)
@@ -88,6 +98,51 @@ unsigned Timeline::GetStartRel()
 unsigned Timeline::GetEndRel()
 {
     return _startRel+_length;
+}
+
+int Timeline::GetReal(QDate date)
+{
+    return _length*_start.daysTo(date)/_start.daysTo(_end);
+}
+
+int Timeline::StepsAchead(int position, int ahead, std::vector<QString> *_toWrite)
+{
+    QDate curr = _start;
+    if(position!=-1)
+    {
+        position -=_startRel;
+    }
+    else position = 0;
+    int rest = _length-position;
+    if (ahead<rest) rest = ahead;
+
+    switch (_step)
+    {
+    case day:
+    case week: curr=curr.addDays(position*_multi);
+        for (int i=0;i<rest;i+=15)
+        {
+            _toWrite->push_back(curr.toString("yyyy.MM.dd"));
+            curr=curr.addDays(15*_multi);
+        }
+        break;
+    case month: curr=curr.addMonths(position);
+        for (int i=0;i<rest;i+=15)
+        {
+            _toWrite->push_back(curr.toString("yyyy.MM"));
+            curr=curr.addMonths(15);
+        }
+        break;
+    default: curr=curr.addYears(position*_multi);
+        for (int i=0;i<rest;i+=15)
+        {
+            _toWrite->push_back(curr.toString("yyyy"));
+            curr=curr.addYears(15*_multi);
+        }
+        break;
+    }
+    _toWrite->push_back(_end.toString("yyyy.MM.dd"));
+    return rest;
 }
 
 std::vector<QString> Timeline::GetText(unsigned start, unsigned end)

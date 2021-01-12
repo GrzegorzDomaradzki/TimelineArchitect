@@ -19,6 +19,7 @@ private:
     QDate _end;
     QDate _readPos;
     unsigned _length;
+    int _multi;
 
     unsigned _startRel;
 
@@ -39,6 +40,9 @@ public:
     void SetStartRel(unsigned x);
     unsigned GetStartRel();
     unsigned GetEndRel();
+    int GetReal(QDate);
+
+    int StepsAchead(int position,int ahead,std::vector<QString> *toWrite);
 
 
     std::vector<QString> GetText(unsigned start, unsigned end); //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\//

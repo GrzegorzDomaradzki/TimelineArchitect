@@ -17,6 +17,7 @@ EventFrame::EventFrame(unsigned new_id, QWidget *parent) :
 {
     ui->setupUi(this);
     _id = new_id;
+    real = dual = nullptr;
 }
 
 EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
@@ -26,6 +27,8 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
     ui->setupUi(this);
     _id = new_id;
     _event = event;
+    real = &event->realPos;
+    dual = &event->isDual;
     ui->TitleLab->setText(event->name);
     ui->DescLab->setText(event->text);
     if(event->IsBinary()) ui->DateLab->setText(event->GetDateStart().toString());
@@ -46,6 +49,7 @@ EventFrame::~EventFrame()
 
 void EventFrame::mousePressEvent(QMouseEvent *event)
 {
+    emit NoRepaint();
     _offset = event->pos();
     this->raise();
 }

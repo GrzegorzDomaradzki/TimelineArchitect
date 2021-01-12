@@ -25,22 +25,17 @@ void NewTimeline::on_buttonBox_accepted()
 {
 
     Timeline* timeline = new Timeline(ui->StartDate->date(),ui->EndDate->date(),(StepType)ui->Unit->currentIndex(),_master);
-    QString info;
-    int OK;
-    _master->AddTimeline(timeline,OK,info);
-    if (OK==-1)
+    if (timeline->GetStart().daysTo(timeline->GetEnd())>2 && timeline->GetStart()<timeline->GetEnd())
     {
-        QMessageBox::StandardButton reply;
-          reply = QMessageBox::question(this, "Colision", info,
-                                        QMessageBox::Yes|QMessageBox::No);
-          if (reply == QMessageBox::Yes) {
-          // TODO
-          }
-          else
-          {
-              delete timeline;
-              return;
-          }
-    }
+    _master->AddTimeline(timeline);
+    _master->updateLength();
     this->close();
+    }
+    else
+    {
+        delete timeline;
+        QMessageBox msgBox;
+        msgBox.setText("First date must be at least two days before second one");
+        msgBox.exec();
+    }
 }

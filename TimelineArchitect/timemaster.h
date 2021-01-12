@@ -34,15 +34,13 @@ public:
     int TimelineCount();
 
 
-     int AskForDate(QDate,QDate);
-     int AskForDate(QDate);
 
-     int findPosition(int start, int end, QDate date);
-     int findEventPosition(int start, int end, QDate date);
+     int findPosition(QDate date);
+     int findEventPosition(QDate date);
 
      int DropTimeline(int id);
      int CutTimeline(int id);
-     int AddTimeline(Timeline*,int& succes,QString &info);
+     int AddTimeline(Timeline*);
 
      int CreateEvent();
      int AddEvent(Event* event,QString& info);
@@ -53,6 +51,9 @@ public:
      int getNewId();
      unsigned getLength();
      void updateLength();
+
+     int findRealPosition(unsigned);
+     Timeline* GetTimeline(int);
 
 signals:
 

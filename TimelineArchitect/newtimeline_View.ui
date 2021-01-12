@@ -88,6 +88,11 @@
            </item>
            <item>
             <property name="text">
+             <string>week</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>day</string>
             </property>
            </item>

@@ -20,6 +20,9 @@ public:
     EventFrame(unsigned new_id,Event* event, QWidget *parent = nullptr);
     ~EventFrame();
 
+    unsigned* real;
+    unsigned* dual;
+
     void  mousePressEvent(QMouseEvent *event) override;
 
 
@@ -31,6 +34,8 @@ public slots:
 
 signals:
     void forgetMe(unsigned _id);
+    void NoRepaint();
+    void Repaint();
 
 private:
     Ui::EventFrame *ui;

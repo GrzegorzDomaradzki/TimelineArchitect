@@ -16,7 +16,7 @@ private:
 
         QDate _startDate;
         QDate _endDate;
-        bool _isBinary;
+
         std::vector<QString> _ownedTags;
         Tags* _Tags;
         int _x,_y;
@@ -25,8 +25,9 @@ public:
         QString text;
         QString multimedia;
         QString name;
-        unsigned NumberInLine;
         unsigned int id;
+        unsigned realPos;
+        unsigned isDual;
 
         QVector<QString> ReadTags;
         bool AddTag(QString TagName,QString& info) ;
