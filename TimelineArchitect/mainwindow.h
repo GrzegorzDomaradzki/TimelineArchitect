@@ -48,6 +48,8 @@ private slots:
 
     void on_EraseTagButt_2_clicked();
 
+    void on_actionErase_selected_triggered();
+
 signals:
 
 };

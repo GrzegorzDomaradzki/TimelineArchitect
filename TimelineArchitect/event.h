@@ -40,6 +40,7 @@ public:
         bool reincarnate(QDate,QString& info);
         bool reincarnate(QDate,QDate,QString& info);
         void Save(QTextStream out);
+        void Unregister();
 
 
 public:
@@ -51,7 +52,8 @@ public:
 public slots:
 
 signals:
-    void OnDateChange(unsigned &id);
+    void DateChange(unsigned &id);
+    void SignOut(unsigned id);
 
 };
 

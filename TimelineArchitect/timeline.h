@@ -17,7 +17,6 @@ private:
     StepType _step;
     QDate _start;
     QDate _end;
-    QDate _readPos;
     unsigned _length;
     int _multi;
 

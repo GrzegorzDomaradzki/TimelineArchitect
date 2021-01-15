@@ -14,14 +14,15 @@ CentralFrame::CentralFrame(QWidget *parent) :
     _relativePosition = 0;
     _resolution = 10;
     _end = 0;
-
+    _noPaint = false;
+    _eventsViews = QMap<int,EventFrame*>();
 }
 
 CentralFrame::~CentralFrame()
 {
     foreach (auto event, _eventsViews)
     {
-        delete event.second;
+        delete event;
     }
     delete ui;
 }
@@ -29,14 +30,15 @@ CentralFrame::~CentralFrame()
 void CentralFrame::AddEvent(Event *event)
 {
 
-    auto newFrame = new EventFrame(_generator++,event,nullptr);
+    auto newFrame = new EventFrame(_generator,event,nullptr);
     newFrame->setParent(this);
     newFrame->setFrameShape(QFrame::StyledPanel);
     newFrame->setFrameShadow(QFrame::Raised);
-    _eventsViews.insert(std::pair<unsigned,EventFrame*>(_generator,newFrame));
+    _eventsViews[_generator++] = newFrame;
     newFrame->move(event->realPos*_resolution-_relativePosition,height()/2);
     newFrame->show();
-    connect(newFrame,SIGNAL(NoRepaint()),this,SLOT(OnStopDraw()));
+    connect(newFrame,&EventFrame::RewerseRepaint,this,&CentralFrame::OnRewersePaint);
+    connect(newFrame,&EventFrame::AddMe,this,&CentralFrame::OnAddMe);
     Redraw();
 }
 
@@ -61,6 +63,23 @@ void CentralFrame::UpdateTimelineData()
     Redraw();
 }
 
+void CentralFrame::EraseSelected()
+{
+    if (_selected.size()>0)
+    {
+        auto reply = QMessageBox::question(this, "Erase events", QString("Do you want to delete ") + QString::number(_selected.size()) + " events?",
+                                        QMessageBox::Yes|QMessageBox::No);
+        if (reply!=QMessageBox::Yes) return;
+        foreach(auto selected, _selected)
+        {
+            _eventsViews[selected]->SayGoodbye();
+            _eventsViews.remove(selected);
+        }
+        _selected.clear();
+        Redraw();
+    }
+}
+
 void CentralFrame::paintEvent(QPaintEvent *event)
 {
     if (_end==0) return;
@@ -77,17 +96,16 @@ void CentralFrame::paintEvent(QPaintEvent *event)
     unsigned i = 1;
     auto ahead = (endPos-now)/_resolution+1;
     int toBreak = GetDist(ahead,_relativePosition);
-    if (endPos+4*_resolution>_end-(int)_relativePosition)
-    {
-        PrintArrow(_end-_relativePosition+_resolution,painter);
-        endPos=_end-(int)_relativePosition-4*_resolution;
-    }
     if (_relativePosition<3) painter->drawLine(now+1,height(),now+1,0);
     now= _resolution;
     PrintDate(now,painter,2);
     while ((int)now<endPos)
     {
-        if (!toBreak) toBreak = Reload(now,ahead,painter);
+        if (!toBreak)
+        {
+            toBreak = Reload(now,ahead,painter);
+            i = 1;
+        }
         else
         {
             if (i % 5 == 0)
@@ -106,7 +124,12 @@ void CentralFrame::paintEvent(QPaintEvent *event)
         ahead--;
         toBreak--;
     }
-    PrintEventLines(painter);
+    if (endPos+4*_resolution>_end-(int)_relativePosition)
+    {
+        PrintArrow(_end-_relativePosition+_resolution,painter);
+        endPos=_end-(int)_relativePosition-4*_resolution;
+    }
+    if (!_noPaint) PrintEventLines(painter);
     delete painter;
 }
 
@@ -150,10 +173,8 @@ void CentralFrame::mouseReleaseEvent(QMouseEvent *event)
 
 void CentralFrame::moveEvents(int diff)
 {
-    EventFrame* event;
-    foreach (auto map, _eventsViews)
+    foreach (auto event, _eventsViews)
     {
-        event = map.second;
         event->move(diff+event->x(),event->y());
     }
 }
@@ -163,7 +184,7 @@ void CentralFrame::PrintDate(unsigned location, QPainter* painter,int ascended)
     auto old = painter->pen();
     painter->setPen(Qt::black);
     if (ascended == 2) painter->drawText(location,height()/2+_resolution*8,1,1,Qt::AlignLeft|Qt::TextDontClip,GetNext());
-    else if (ascended) painter->drawText(location+(ascended*_resolution*4),height()/2+_resolution*6,1,1,Qt::AlignCenter|Qt::TextDontClip,GetNext());
+    else if (ascended) painter->drawText(location+(ascended*_resolution*4),height()/2+_resolution*6*ascended,1,1,Qt::AlignCenter|Qt::TextDontClip,GetNext());
     else painter->drawText(location,height()/2-_resolution*3.5,1,1,Qt::AlignCenter|Qt::TextDontClip,GetNext());
     painter->setPen(old);
 }
@@ -186,17 +207,16 @@ void CentralFrame::PrintEventLines(QPainter *painter)
 {
     foreach(auto event, _eventsViews)
     {
-        auto frame = event.second;
-        qDebug()<< *frame->real;
-        auto y = frame->y()+frame->height()/2;
-        auto x =*frame->real*_resolution - _relativePosition;
+        painter->setPen(QPen(event->GetColor(),3));
+        auto y = event->y()+event->height()/2;
+        auto x =*event->real*_resolution - _relativePosition;
         painter->drawLine(x,height()/2,x,y);
-        painter->drawLine(frame->x()+10,y,x,y);
-        if (*frame->dual)
+        painter->drawLine(event->x()+10,y,x,y);
+        if (*event->dual)
         {
-            x = _relativePosition - *frame->dual*_resolution;
+            x = *event->dual*_resolution - _relativePosition;
             painter->drawLine(x,height()/2,x,y);
-            painter->drawLine(frame->x()+10,y,x,y);
+            painter->drawLine(event->x()+10,y,x,y);
         }
     }
 }
@@ -232,19 +252,26 @@ QString CentralFrame::GetNext()
     return _toWrite[_bookmark];
 }
 
-void CentralFrame::OnStopDraw()
+void CentralFrame::OnRewersePaint()
 {
-    qDebug()<<"in!";
+    if (!(_noPaint = !_noPaint)) this->repaint();
 }
 
-void CentralFrame::OnResumeDraw()
+
+
+void CentralFrame::OnAddMe(unsigned id, bool add)
 {
-
-}
-
-void CentralFrame::OnForgotten(int id)
-{
-
+    if(add)
+    {
+        //foreach (auto select, _selected) if (id == select) return;
+        _selected.push_back(id);
+        return;
+    }
+    for (auto iterator = _selected.begin();iterator!=_selected.end(); iterator++) if (*iterator == id)
+    {
+        _selected.erase(iterator);
+        break;
+    };
 }
 
 

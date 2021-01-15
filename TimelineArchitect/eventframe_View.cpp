@@ -18,6 +18,7 @@ EventFrame::EventFrame(unsigned new_id, QWidget *parent) :
     ui->setupUi(this);
     _id = new_id;
     real = dual = nullptr;
+
 }
 
 EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
@@ -31,25 +32,79 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
     dual = &event->isDual;
     ui->TitleLab->setText(event->name);
     ui->DescLab->setText(event->text);
-    if(event->IsBinary()) ui->DateLab->setText(event->GetDateStart().toString());
+    if(event->IsBinary()) ui->DateLab->setText(event->GetDateStart().toString("yyyy.MM.dd"));
     else
     {
-        QString date = event->GetDateStart().toString();
-        date += "-" + event->GetDateEnd().toString();
+        QString date = event->GetDateStart().toString("yyyy.MM.dd");
+        date += "-" + event->GetDateEnd().toString("yyyy.MM.dd");
         ui->DateLab->setText(date);
     }
     this->raise();
+    _color = Qt::lightGray;
+    _markedColor = Qt::red;
+    QPalette pal = palette();
+    pal.setColor(QPalette::Background, _color);
+    this->setPalette(pal);
+    this->setAutoFillBackground(true);
 }
 
 EventFrame::~EventFrame()
 {
+
     delete ui;
 }
+
+Qt::GlobalColor EventFrame::GetColor()
+{
+    return _color;
+}
+
+Qt::GlobalColor EventFrame::GetMarkedColor()
+{
+    return _markedColor;
+}
+
+void EventFrame::SetColor(Qt::GlobalColor color)
+{
+    _color = color;
+    if (ui->checked->isChecked())
+    {
+        QPalette pal = palette();
+        pal.setColor(QPalette::Background, _color);
+        this->setPalette(pal);
+    }
+}
+
+void EventFrame::SetMarkedColor(Qt::GlobalColor color)
+{
+    _markedColor = color;
+    if (ui->checked->isChecked())
+    {
+        QPalette pal = palette();
+        pal.setColor(QPalette::Background, _markedColor);
+        this->setPalette(pal);
+    }
+}
+
+void EventFrame::ChangeRadio()
+{
+    ui->checked->setChecked(!ui->checked->isChecked());
+    ChangeColors();
+}
+
+void EventFrame::SayGoodbye()
+{
+    _event->Unregister();
+    deleteLater();
+    this->close();
+}
+
+
 
 
 void EventFrame::mousePressEvent(QMouseEvent *event)
 {
-    emit NoRepaint();
+    emit RewerseRepaint();
     _offset = event->pos();
     this->raise();
 }
@@ -86,4 +141,20 @@ void EventFrame::mouseReleaseEvent(QMouseEvent *event)
         pos = pos+height() - par->height();
         if (pos>0)this->move(mapToParent(event->pos() - QPoint(0,pos) - _offset));
     }
+    emit RewerseRepaint();
+}
+
+
+void EventFrame::ChangeColors()
+{
+    QPalette pal = palette();
+    if (ui->checked->isChecked()) pal.setColor(QPalette::Background, _markedColor);
+    else pal.setColor(QPalette::Background, _color);
+    this->setPalette(pal);
+}
+
+void EventFrame::on_checked_clicked(bool checked)
+{
+    emit AddMe(_id,checked);
+    ChangeColors();
 }

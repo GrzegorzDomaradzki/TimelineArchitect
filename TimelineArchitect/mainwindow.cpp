@@ -142,3 +142,8 @@ void MainWindow::on_EraseTagButt_2_clicked()
     }
     tagList->removeRow(row);
 }
+
+void MainWindow::on_actionErase_selected_triggered()
+{
+    centralFrame->EraseSelected();
+}

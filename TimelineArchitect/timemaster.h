@@ -20,8 +20,8 @@ private:
 
     std::vector<Timeline*> _timelines;
     std::vector<Event*> _events;
-    std::vector<unsigned> _events_id;
-    int _currID;
+    //std::vector<unsigned> _events_id;
+    //int _currID;
     unsigned _length;
 
 
@@ -34,28 +34,27 @@ public:
     int TimelineCount();
 
 
-
      int findPosition(QDate date);
      int findEventPosition(QDate date);
 
-     int DropTimeline(int id);
-     int CutTimeline(int id);
      int AddTimeline(Timeline*);
 
-     int CreateEvent();
+
      int AddEvent(Event* event,QString& info);
-     bool ShiftEvent(Event& event,QString& info);
 
      int SaveProject(QFile);
      int LoadProject(QFile);
-     int getNewId();
      unsigned getLength();
      void updateLength();
+     void UpdateEventsReals();
 
      int findRealPosition(unsigned);
      Timeline* GetTimeline(int);
 
 signals:
+
+public slots:
+     void OnSignOut(int);
 
 };
 

@@ -38,7 +38,7 @@ bool Event::RemoveTag(QString TagName)
 
 bool Event::IsBinary()
 {
-    return isDual;
+    return !isDual;
 }
 
 QDate Event::GetDateStart()
@@ -57,7 +57,7 @@ bool Event::reincarnate(QDate date1, QString& info)
     QDate OldDate = _startDate;
     _startDate = date1;
     auto to_emit = id;
-    emit OnDateChange(to_emit);
+    emit DateChange(to_emit);
     if (to_emit==id)return 1;
     _startDate = OldDate;
     return 0;
@@ -70,7 +70,7 @@ bool Event::reincarnate(QDate date1,QDate date2, QString& info)
     _startDate = date1;
     _endDate = date2;
     auto to_emit = id;
-    emit OnDateChange(to_emit);
+    emit DateChange(to_emit);
     if (to_emit==id)return 1;
     _startDate = OldDate;
     _endDate = OldDate2;
@@ -94,6 +94,12 @@ void Event::Save(QTextStream out)
     out<<"</Event>\n";
 }
 
+void Event::Unregister()
+{
+    emit SignOut(id);
+    deleteLater();
+}
+
 Event::Event(QObject *parent) : QObject(parent)
 {
     throw "not enough data";
@@ -103,7 +109,7 @@ Event::Event(Tags* boss,QDate start, QObject *parent): QObject(parent),_startDat
 {
 }
 
-Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),isDual(0),_Tags(boss), _x(-1),_y(-1)
+Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),isDual(1),_Tags(boss), _x(-1),_y(-1)
 {
 }
 

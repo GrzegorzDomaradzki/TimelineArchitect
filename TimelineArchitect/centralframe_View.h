@@ -10,6 +10,7 @@
 #include <QColor>
 #include <QPainterPath>
 #include <timemaster.h>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 class QDragEnterEvent;
@@ -34,6 +35,7 @@ public:
     void SetResolution(int res);
     void Redraw();
     void UpdateTimelineData();
+    void EraseSelected();
 
     void paintEvent(QPaintEvent *event) override;
     void  mousePressEvent(QMouseEvent *event) override;
@@ -52,24 +54,25 @@ public:
     QString GetNext();
     Qt::GlobalColor color;
 
-private:
 
+private:
+    QMap<int,EventFrame*> _eventsViews;
     std::vector<QString> _toWrite;
     int _bookmark;
-    unsigned _generator;
-    std::map<unsigned,EventFrame*> _eventsViews;
-    std::vector<unsigned> _toDelete;
+    int _generator;
+    //std::vector<unsigned> _toDelete;
     std::vector<unsigned> _selected;
     Ui::CentralFrame *ui;
     unsigned int _relativePosition;
     QPoint _offset;
     int _resolution;
     int _end;
+    bool _noPaint;
 
 public slots:
-    void OnStopDraw();
-    void OnResumeDraw();
-    void OnForgotten(int id);
+    void OnRewersePaint();
+
+    void OnAddMe(unsigned int id,bool add);
 };
 
 #endif // CENTRALFRAME_H

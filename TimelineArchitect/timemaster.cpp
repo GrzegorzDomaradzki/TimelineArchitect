@@ -3,7 +3,6 @@
 TimeMaster::TimeMaster(QObject *parent) : QObject(parent)
 {
     tags = new Tags();
-    _currID = 0;
 }
 
 TimeMaster::~TimeMaster()
@@ -33,9 +32,9 @@ int TimeMaster::TimelineCount()
 
 int TimeMaster::findPosition(QDate date)
 {
-    if ((int)_timelines.size()==-1 || _timelines[0]->GetStart()>=date) return -1;
+    if ((int)_timelines.size()==0 || _timelines[0]->GetStart()>=date) return -1;
     int i = 0;
-    while (i<(int)_timelines.size() && _timelines[i]->GetEnd()<=date) i++;
+    while (i<(int)_timelines.size() && _timelines[i]->GetEnd()<date) i++;
     return i;
 }
 
@@ -48,17 +47,20 @@ int TimeMaster::findEventPosition(QDate date)
 
 int TimeMaster::AddTimeline(Timeline* timeline)
 {
+    static int control = 0;
+    control++;
     if (_timelines.size()==0)
     {
         timeline->NumberInLine=0;
         timeline->SetStartRel(0);
         _timelines.push_back(timeline);
+        control--;
         return 0;
     }
     auto i = findPosition(timeline->GetStart());
-    Timeline* intercut;
+    Timeline* intercut = nullptr;
     QDate intercutEnd;
-    if (i==-1 || i == (int)_timelines.size()) intercut = nullptr;
+    if (i==-1 || i == (int)_timelines.size());
     else
     {
         intercut = _timelines[i];
@@ -69,13 +71,13 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     {
         if (i == (int)_timelines.size()) i--;
         _timelines[i]->ShrinkRight(timeline->GetStart());
-        timeline->Grow(_timelines[i]->GetEnd());
+        //timeline->Grow(_timelines[i]->GetEnd());
         timeline->SetStartRel(_timelines[i]->GetEndRel());
     }
     i++;
     timeline->NumberInLine=i;
     //kasowanie
-    if (!intercut || intercutEnd<timeline->GetEnd())
+    if (!intercut || intercutEnd<=timeline->GetEnd())
     {
         intercut=nullptr;
         while(i<(int)_timelines.size())
@@ -94,7 +96,7 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     if (i!=(int)_timelines.size())
     {
         _timelines[i]->ShrinkLeft(timeline->GetStart());
-        timeline->Grow(_timelines[i]->GetEnd());
+        //timeline->Grow(_timelines[i]->GetEnd());
         //edycja
         for (;i<(int)_timelines.size();i++)
         {
@@ -104,13 +106,14 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     }
     i = timeline->NumberInLine;
     if (intercut!=nullptr) AddTimeline(new Timeline(timeline->GetEnd(),intercutEnd,intercut->GetStep(),this));
-    if (i!=0 && timeline->GetStep()==_timelines[i-1]->GetStep())
+    else if (i!=0 && timeline->GetStep()==_timelines[i-1]->GetStep())
     {
         if (i!=(int)_timelines.size()-1 && timeline->GetStep()==_timelines[i+1]->GetStep()) AddTimeline(new Timeline (_timelines[i-1]->GetStart(),_timelines[i+1]->GetEnd(),timeline->GetStep(),this));
         else AddTimeline(new Timeline (_timelines[i-1]->GetStart(),timeline->GetEnd(),timeline->GetStep(),this));
     }
     else if (i!=(int)_timelines.size()-1 && timeline->GetStep()==_timelines[i+1]->GetStep()) AddTimeline(new Timeline (timeline->GetStart(),_timelines[i+1]->GetEnd(),timeline->GetStep(),this));
-    //UpdateEventsPointers();
+    control--;
+    if (!control) UpdateEventsReals();
     return 0;
 }
 
@@ -126,22 +129,20 @@ int TimeMaster::AddEvent(Event* event, QString &info)
     }
     auto pos = findEventPosition(event->GetDateStart());
     _events.insert(_events.begin()+pos,event);
-    foreach (auto oldPos, _events_id)
+    event->id = pos++;
+    for (;pos<(int)_events.size();pos++) _events[pos]->id = pos;
+/*    foreach (auto oldPos, _events_id)
     {
         if ((int)oldPos<=pos) oldPos++;
     }
-    _events_id.push_back(pos);
+    _events_id.push_back(pos)*/;
+    connect(event,&Event::SignOut,this,&TimeMaster::OnSignOut);
     event->realPos = _timelines[timelinePos]->GetReal(event->GetDateStart());
     if (event->isDual) event->isDual = _timelines[endPos]->GetReal(event->GetDateEnd());
-    if (EventCount()>0)
-    event->id = _currID++;
-    return pos;
+    return 0;
 }
 
-bool TimeMaster::ShiftEvent(Event &event, QString &info)
-{
 
-}
 
 void TimeMaster::updateLength()
 {
@@ -153,12 +154,28 @@ void TimeMaster::updateLength()
     _length = length;
 }
 
+void TimeMaster::UpdateEventsReals()
+{
+    int i = 0;
+    foreach (auto event, _events)
+    {
+        while (!_timelines[i]->Contains(event->GetDateStart())) i++;
+        event->realPos = _timelines[i]->GetReal(event->GetDateStart());
+        if (event->isDual)
+        {
+            int j = i;
+            while (!_timelines[j]->Contains(event->GetDateEnd())) j++;
+            event->isDual = _timelines[j]->GetReal(event->GetDateEnd());
+        }
+    }
+}
+
 int TimeMaster::findRealPosition(unsigned step)
 {
     int i = 0;
     foreach (auto timeline, _timelines)
     {
-        if (step<=timeline->GetStartRel()) return i;
+        if (step<=timeline->GetEndRel()) return i;
         ++i;
     }
     return i-1;
@@ -167,6 +184,15 @@ int TimeMaster::findRealPosition(unsigned step)
 Timeline *TimeMaster::GetTimeline(int i)
 {
     return _timelines[i];
+}
+
+void TimeMaster::OnSignOut(int id)
+{
+    auto iterator = _events.begin();
+    iterator+=id;
+    _events.erase(iterator);
+    for(;iterator!=_events.end();iterator++) (*iterator)->id--;
+
 }
 
 unsigned TimeMaster::getLength()

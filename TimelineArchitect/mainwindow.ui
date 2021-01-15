@@ -50,7 +50,6 @@
      <string>Timeline</string>
     </property>
     <addaction name="actionAdd_timeline"/>
-    <addaction name="actionErase_selected"/>
    </widget>
    <widget class="QMenu" name="menuTags">
     <property name="title">
@@ -64,7 +63,7 @@
      <string>Events</string>
     </property>
     <addaction name="actionAdd_Event"/>
-    <addaction name="actionErase_selected_2"/>
+    <addaction name="actionErase_selected"/>
    </widget>
    <addaction name="menuProject"/>
    <addaction name="menuTimeline"/>
@@ -166,11 +165,6 @@
     <string>Add Timeline</string>
    </property>
   </action>
-  <action name="actionErase_selected">
-   <property name="text">
-    <string>Erase selected</string>
-   </property>
-  </action>
   <action name="actionAdd_Tag">
    <property name="text">
     <string>Add Tag</string>
@@ -191,7 +185,7 @@
     <string>Add Event</string>
    </property>
   </action>
-  <action name="actionErase_selected_2">
+  <action name="actionErase_selected">
    <property name="text">
     <string>Erase selected</string>
    </property>

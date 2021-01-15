@@ -31,9 +31,6 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <property name="styleSheet">
-   <string notr="true">background-color: rgb(228, 238, 236);</string>
-  </property>
   <property name="frameShape">
    <enum>QFrame::Box</enum>
   </property>
@@ -46,21 +43,18 @@
   <property name="midLineWidth">
    <number>4</number>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <widget class="QWidget" name="layoutWidget">
-      <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,10">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,10,0">
        <property name="sizeConstraint">
         <enum>QLayout::SetDefaultConstraint</enum>
        </property>
        <item>
-        <widget class="QToolButton" name="toolButton">
+        <widget class="QRadioButton" name="checked">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="maximumSize">
           <size>
@@ -995,14 +989,14 @@ alternate-background-color: rgb(211, 215, 207);</string>
           </palette>
          </property>
          <property name="text">
-          <string>Edit</string>
+          <string>Show</string>
          </property>
         </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout">
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="4,8">
        <item>
         <widget class="QLabel" name="DateLab">
          <property name="maximumSize">
@@ -1037,8 +1031,8 @@ alternate-background-color: rgb(211, 215, 207);</string>
         </widget>
        </item>
       </layout>
-     </widget>
-    </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

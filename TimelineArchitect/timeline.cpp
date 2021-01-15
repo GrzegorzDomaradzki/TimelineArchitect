@@ -5,7 +5,7 @@ Timeline::Timeline(QObject *parent) : QObject(parent)
 
 }
 
-Timeline::Timeline(QDate start, QDate end, StepType unit, QObject *parent): QObject(parent), _start(start), _end(end), _readPos(start),_startRel(0)
+Timeline::Timeline(QDate start, QDate end, StepType unit, QObject *parent): QObject(parent), _start(start), _end(end),_startRel(0)
 {
     _step = unit;
     UpdateLength();
@@ -108,7 +108,7 @@ int Timeline::GetReal(QDate date)
 int Timeline::StepsAchead(int position, int ahead, std::vector<QString> *_toWrite)
 {
     QDate curr = _start;
-    if(position!=-1)
+    if(position>0)
     {
         position -=_startRel;
     }

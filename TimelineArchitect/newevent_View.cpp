@@ -40,7 +40,17 @@ void NewEvent::SetMaster(TimeMaster *master)
 
 void NewEvent::on_buttonBox_accepted()
 {
-    if(ui->EndDate->isEnabled()) _event = new Event(_master->tags,ui->StartDate->date(),ui->EndDate->date(),_master);
+    QMessageBox msgBox;
+    if(ui->LongTime->isChecked())
+    {
+        if (ui->StartDate->date()>=ui->EndDate->date())
+        {
+         msgBox.setText("Start date must be before end date");
+         msgBox.exec();
+         return;
+        }
+        _event = new Event(_master->tags,ui->StartDate->date(),ui->EndDate->date(),_master);
+    }
     else _event = new Event(_master->tags,ui->StartDate->date(),_master);
     QString info;
     _event->name=ui->Title->text();
@@ -49,7 +59,6 @@ void NewEvent::on_buttonBox_accepted()
     {
     if(_master->AddEvent(_event,info)==-1)
         {
-            QMessageBox msgBox;
             msgBox.setText(info);
             msgBox.exec();
             delete _event;
