@@ -5,6 +5,7 @@
 #include "event.h"
 #include <QMouseEvent>
 #include <QColor>
+#include "newevent_View.h"
 
 namespace Ui {
 class EventFrame;
@@ -19,10 +20,10 @@ public:
     EventFrame(unsigned new_id, QWidget *parent = nullptr);
     EventFrame(unsigned new_id,Event* event, QWidget *parent = nullptr);
     ~EventFrame();
-    Qt::GlobalColor GetColor();
-    Qt::GlobalColor GetMarkedColor();
-    void SetColor(Qt::GlobalColor);
-    void SetMarkedColor(Qt::GlobalColor);
+    QColor GetColor();
+    QColor GetMarkedColor();
+    void SetColor(QColor);
+    void SetMarkedColor(QColor);
     void ChangeRadio();
     void SayGoodbye();
 
@@ -39,6 +40,8 @@ public:
 
     void mouseReleaseEvent(QMouseEvent *event) override;
 
+    void mouseDoubleClickEvent(QMouseEvent * event) override;
+
 public slots:
 
 signals:
@@ -49,14 +52,17 @@ signals:
 private slots:
 
     void on_checked_clicked(bool checked);
+    void OnGetRelId(unsigned* id);
+
+    void on_EditButton_clicked();
 
 private:
     Ui::EventFrame *ui;
     Event* _event;
     QPoint _offset;
     unsigned _id;
-    Qt::GlobalColor _color;
-    Qt::GlobalColor _markedColor;
+    QColor _color;
+    QColor _markedColor;
 
     void ChangeColors();
 };

@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QApplication>
 #include <QStringList>
+#include <QColorDialog>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -9,24 +10,32 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    timeEngine = new TimeMaster(this);
-    centralFrame = new CentralFrame(centralWidget());
-    centralFrame->setObjectName(QString::fromUtf8("frame"));
-    centralFrame->setFrameShape(QFrame::StyledPanel);
-    centralFrame->setFrameShadow(QFrame::Raised);
-    centralFrame->timeEngine = timeEngine;
-    ui->verticalLayout_4->addWidget(centralFrame);
+    _timeEngine = new TimeMaster(this);
+    _centralFrame = new CentralFrame(centralWidget());
+    _centralFrame->setObjectName(QString::fromUtf8("frame"));
+    _centralFrame->setFrameShape(QFrame::StyledPanel);
+    _centralFrame->setFrameShadow(QFrame::Raised);
+    _centralFrame->timeEngine = _timeEngine;
+    ui->verticalLayout_4->addWidget(_centralFrame);
     tagList = new QStringListModel(this);
     ui->TagList->setModel(tagList);
     ui->TagList->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 }
 
+QString MainWindow::GetActiveRow()
+{
+    auto row = ui->TagList->currentIndex().row();
+    if (row == -1) return "";
+    return tagList->data(tagList->index(row)).toString();
+}
+
 
 
 MainWindow::~MainWindow()
 {
-    delete  timeEngine;
+    delete  _centralFrame;
+    delete  _timeEngine;
     delete ui;
 
 }
@@ -36,13 +45,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionEmpty_project_triggered()
 {
-    if (timeEngine!=nullptr)
+    auto reply = QMessageBox::question(this, "New Project", "Are you sure? All unsaved data will be lost",
+                                    QMessageBox::Yes|QMessageBox::No);
+    if (reply!=QMessageBox::Yes) return;
+    if (_timeEngine!=nullptr)
     {
-        delete timeEngine;
-        timeEngine = nullptr;
+        delete _timeEngine;
+        _timeEngine = nullptr;
     }
-    timeEngine = new TimeMaster(this);
-    qDebug() << "New Timeline";
+    _timeEngine = new TimeMaster(this);
+    _centralFrame = new CentralFrame(centralWidget());
+    _centralFrame->timeEngine = _timeEngine;
+    _centralFrame->Purge();
+    _centralFrame->UpdateTimelineData();
 }
 
 void MainWindow::on_AddTagButt_clicked()
@@ -53,7 +68,7 @@ void MainWindow::on_AddTagButt_clicked()
     QString info;
     if (TextFormatControl::TagName(text,info))
     {
-        if (timeEngine->tags->RegisterTag(text)!=-1)
+        if (_timeEngine->tags->RegisterTag(text)!=-1)
         {
             tagList->insertRow(0);
             auto index = tagList->index(0);
@@ -72,15 +87,15 @@ void MainWindow::on_actionAdd_timeline_triggered()
 {
     NewTimeline dialog;
     dialog.setModal(true);
-    dialog.SetMaster(timeEngine);
+    dialog.SetMaster(_timeEngine);
     dialog.exec();
 
-    centralFrame->UpdateTimelineData();
+    _centralFrame->UpdateTimelineData();
 }
 
 void MainWindow::on_actionAdd_Event_triggered()
 {
-    if (timeEngine->TimelineCount()==0)
+    if (_timeEngine->TimelineCount()==0)
     {
         QString info = "First create timeline";
         QMessageBox msgBox;
@@ -89,10 +104,10 @@ void MainWindow::on_actionAdd_Event_triggered()
         return;
     }
     NewEvent dialog(true);
-    dialog.SetMaster(timeEngine);
+    dialog.SetMaster(_timeEngine);
     dialog.exec();
     Event* event = dialog.GetEvent();
-    if (event!=nullptr) centralFrame->AddEvent(event);
+    if (event!=nullptr) _centralFrame->AddEvent(event);
 
 }
 
@@ -111,7 +126,7 @@ void MainWindow::on_TagList_doubleClicked(const QModelIndex &index)
     QString info;
     if (TextFormatControl::TagName(text,info))
     {
-        if (timeEngine->tags->RenameTag(old,text)!=-1)
+        if (_timeEngine->tags->RenameTag(old,text)!=-1)
         {
             tagList->setData(index,text);
             tagList->sort(0);
@@ -134,7 +149,7 @@ void MainWindow::on_EraseTagButt_2_clicked()
     auto reply = QMessageBox::question(this, "Erase Tag", question,
                                     QMessageBox::Yes|QMessageBox::No);
     if (reply!=QMessageBox::Yes) return;
-    if (-1==timeEngine->tags->DeleteTag(tagText))
+    if (-1==_timeEngine->tags->DeleteTag(tagText))
     {
         QMessageBox msgBox;
         msgBox.setText("Error: erased tag never existed - consider reporting issue");
@@ -145,5 +160,83 @@ void MainWindow::on_EraseTagButt_2_clicked()
 
 void MainWindow::on_actionErase_selected_triggered()
 {
-    centralFrame->EraseSelected();
+    _centralFrame->EraseSelected();
+}
+
+
+
+void MainWindow::on_SelectButton_clicked()
+{
+    auto tagText = GetActiveRow();
+    if (tagText=="") return;
+    auto IDs = _timeEngine->getTagOwners(tagText);
+    foreach (auto id , IDs) _centralFrame->OnAddMe(id,1);
+}
+
+void MainWindow::on_SelectOnlyButton_clicked()
+{
+    auto tagText = GetActiveRow();
+    if (tagText=="") return;
+    auto IDs = _timeEngine->getTagOwners(tagText);
+    _centralFrame->UnselectAll();
+    foreach (auto id , IDs) _centralFrame->OnAddMe(id,1);
+}
+
+void MainWindow::on_UnselectButton_clicked()
+{
+    auto tagText = GetActiveRow();
+    if (tagText=="") return;
+    auto IDs = _timeEngine->getTagOwners(tagText);
+    foreach (auto id , IDs) _centralFrame->OnAddMe(id,0);
+}
+
+void MainWindow::on_HideButton_clicked()
+{
+    auto tagText = GetActiveRow();
+    if (tagText=="") return;
+    _centralFrame->HideGiven(_timeEngine->getTagOwners(tagText));
+}
+
+void MainWindow::on_ShowButton_clicked()
+{
+    auto tagText = GetActiveRow();
+    if (tagText=="") return;
+    _centralFrame->ShowGiven(_timeEngine->getTagOwners(tagText));
+}
+
+void MainWindow::on_ShowAllButton_clicked()
+{
+    _centralFrame->ShowAll();
+}
+
+void MainWindow::on_actionChange_resolution_triggered()
+{
+    bool ok;
+    int i = QInputDialog::getInt(this, tr("Set resolution (10 is default) "),
+                                    tr("Resolution"), 10, 5, 100, 1, &ok);
+    if (ok && i!=_centralFrame->GetResolution()) _centralFrame->SetResolution(i);
+}
+
+void MainWindow::on_actionChange_color_triggered()
+{
+    QColor color = QColorDialog::getColor(_centralFrame->color,this);
+    if (color.isValid())
+    {
+    _centralFrame->color = color;
+    _centralFrame->Redraw();
+    }
+}
+
+void MainWindow::on_actionReset_selection_triggered()
+{
+    _centralFrame->UnselectAll();
+}
+
+void MainWindow::on_actionChange_selected_color_triggered()
+{
+    QColor color = QColorDialog::getColor(_centralFrame->GetSelectedColor(),this);
+    if (color.isValid() && color!=_centralFrame->GetSelectedColor())
+    {
+    _centralFrame->SetSelectedColor(color);
+    }
 }

@@ -44,6 +44,7 @@ public:
     void mouseMoveEvent(QMouseEvent *event) override;
 
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
     void moveEvents(int diff);
     void PrintDate(unsigned,QPainter*,int ascended = 0);
@@ -51,8 +52,15 @@ public:
     void PrintEventLines(QPainter*);
     int GetDist(int ahead, int position = -1);
     int Reload(int now, int ahead, QPainter* painter);
+    void UnselectAll();
+    void HideGiven(std::vector<unsigned> IDs);
+    void ShowGiven(std::vector<unsigned> IDs);
+    void ShowAll();
+    void Purge();
+    void SetSelectedColor(QColor);
+    QColor GetSelectedColor();
     QString GetNext();
-    Qt::GlobalColor color;
+    QColor color;
 
 
 private:
@@ -68,6 +76,7 @@ private:
     int _resolution;
     int _end;
     bool _noPaint;
+    QColor _selectedColor;
 
 public slots:
     void OnRewersePaint();

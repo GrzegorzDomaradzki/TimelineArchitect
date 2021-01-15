@@ -117,7 +117,7 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     return 0;
 }
 
-int TimeMaster::AddEvent(Event* event, QString &info)
+int TimeMaster::AddEvent(Event* event, QString &info, bool coon)
 {
     info = "";
     int timelinePos = findPosition(event->GetDateStart());
@@ -131,14 +131,13 @@ int TimeMaster::AddEvent(Event* event, QString &info)
     _events.insert(_events.begin()+pos,event);
     event->id = pos++;
     for (;pos<(int)_events.size();pos++) _events[pos]->id = pos;
-/*    foreach (auto oldPos, _events_id)
-    {
-        if ((int)oldPos<=pos) oldPos++;
-    }
-    _events_id.push_back(pos)*/;
-    connect(event,&Event::SignOut,this,&TimeMaster::OnSignOut);
     event->realPos = _timelines[timelinePos]->GetReal(event->GetDateStart());
     if (event->isDual) event->isDual = _timelines[endPos]->GetReal(event->GetDateEnd());
+    if (coon)
+    {
+        connect(event,&Event::SignOut, this, &TimeMaster::OnSignOut);
+        connect(event,&Event::DateChange, this, &TimeMaster::OnDateChange);
+    }
     return 0;
 }
 
@@ -186,6 +185,17 @@ Timeline *TimeMaster::GetTimeline(int i)
     return _timelines[i];
 }
 
+std::vector<unsigned> TimeMaster::getTagOwners(QString tag)
+{
+    std::vector<unsigned> toRet = std::vector<unsigned>();
+    auto IDs = tags->ProvideTagged(tag);
+    foreach (auto id, IDs)
+    {
+        toRet.push_back(_events[*id]->TranslateId());
+    }
+    return toRet;
+}
+
 void TimeMaster::OnSignOut(int id)
 {
     auto iterator = _events.begin();
@@ -193,6 +203,21 @@ void TimeMaster::OnSignOut(int id)
     _events.erase(iterator);
     for(;iterator!=_events.end();iterator++) (*iterator)->id--;
 
+}
+
+void TimeMaster::OnDateChange(unsigned id, bool* succes)
+{
+    Event* event = _events[id];
+    (*succes)=false;
+    if (_timelines.size()==0 ||
+            _timelines[0]->GetStart()>event->GetDateStart() ||
+            _timelines[TimelineCount()-1]->GetEnd()<event->GetDateStart() ||
+            (event->isDual && _timelines[TimelineCount()-1]->GetEnd()<event->GetDateEnd())
+            ) return;
+    OnSignOut(id);
+    QString s;
+    AddEvent(event,s, 0);
+    (*succes)=true;
 }
 
 unsigned TimeMaster::getLength()

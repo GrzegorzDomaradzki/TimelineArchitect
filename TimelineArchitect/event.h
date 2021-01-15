@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QTextStream>
 #include <tags.h>
+#include <QColor>
 
 
 class Event : public QObject
@@ -23,7 +24,7 @@ private:
 
 public:
         QString text;
-        QString multimedia;
+        QColor color;
         QString name;
         unsigned int id;
         unsigned realPos;
@@ -37,11 +38,11 @@ public:
         QDate GetDateStart() ;
         QDate GetDateEnd() ;
 
-        bool reincarnate(QDate,QString& info);
-        bool reincarnate(QDate,QDate,QString& info);
+        int reincarnate(QDate);
+        int reincarnate(QDate,QDate);
         void Save(QTextStream out);
         void Unregister();
-
+        unsigned TranslateId();
 
 public:
     explicit Event(QObject *parent = nullptr);
@@ -52,8 +53,9 @@ public:
 public slots:
 
 signals:
-    void DateChange(unsigned &id);
+    void DateChange(unsigned id,bool* succes);
     void SignOut(unsigned id);
+    void GetRelId(unsigned* id);
 
 };
 

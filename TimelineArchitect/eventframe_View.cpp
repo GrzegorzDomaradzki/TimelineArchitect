@@ -2,6 +2,7 @@
 #include "ui_eventframe_View.h"
 
 
+
 EventFrame::EventFrame(QWidget *parent) :
     QFrame(parent),
     ui(new Ui::EventFrame)
@@ -25,7 +26,15 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
     QFrame(parent),
     ui(new Ui::EventFrame)
 {
+        this->setAutoFillBackground(true);
+    connect(event,&Event::GetRelId,this,&EventFrame::OnGetRelId);
     ui->setupUi(this);
+
+    _color = event->color;
+    _markedColor = Qt::red;
+    QPalette pal = this->palette();
+    pal.setColor(QPalette::Window, _color);
+    this->setPalette(pal);
     _id = new_id;
     _event = event;
     real = &event->realPos;
@@ -36,16 +45,10 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
     else
     {
         QString date = event->GetDateStart().toString("yyyy.MM.dd");
-        date += "-" + event->GetDateEnd().toString("yyyy.MM.dd");
+        date += " - " + event->GetDateEnd().toString("yyyy.MM.dd");
         ui->DateLab->setText(date);
     }
     this->raise();
-    _color = Qt::lightGray;
-    _markedColor = Qt::red;
-    QPalette pal = palette();
-    pal.setColor(QPalette::Background, _color);
-    this->setPalette(pal);
-    this->setAutoFillBackground(true);
 }
 
 EventFrame::~EventFrame()
@@ -54,19 +57,19 @@ EventFrame::~EventFrame()
     delete ui;
 }
 
-Qt::GlobalColor EventFrame::GetColor()
+QColor EventFrame::GetColor()
 {
     return _color;
 }
 
-Qt::GlobalColor EventFrame::GetMarkedColor()
+QColor EventFrame::GetMarkedColor()
 {
     return _markedColor;
 }
 
-void EventFrame::SetColor(Qt::GlobalColor color)
+void EventFrame::SetColor(QColor color)
 {
-    _color = color;
+    _event->color=_color = color;
     if (ui->checked->isChecked())
     {
         QPalette pal = palette();
@@ -75,7 +78,7 @@ void EventFrame::SetColor(Qt::GlobalColor color)
     }
 }
 
-void EventFrame::SetMarkedColor(Qt::GlobalColor color)
+void EventFrame::SetMarkedColor(QColor color)
 {
     _markedColor = color;
     if (ui->checked->isChecked())
@@ -144,6 +147,16 @@ void EventFrame::mouseReleaseEvent(QMouseEvent *event)
     emit RewerseRepaint();
 }
 
+void EventFrame::mouseDoubleClickEvent(QMouseEvent*)
+{
+
+    NewEvent dialog(false);
+    dialog.SetMaster();
+    dialog.exec();
+    Event* event = dialog.GetEvent();
+    emit RewerseRepaint();
+}
+
 
 void EventFrame::ChangeColors()
 {
@@ -157,4 +170,14 @@ void EventFrame::on_checked_clicked(bool checked)
 {
     emit AddMe(_id,checked);
     ChangeColors();
+}
+
+void EventFrame::OnGetRelId(unsigned *id)
+{
+    *id = _id;
+}
+
+void EventFrame::on_EditButton_clicked()
+{
+
 }

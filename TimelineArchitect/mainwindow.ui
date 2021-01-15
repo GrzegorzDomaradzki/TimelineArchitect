@@ -39,6 +39,7 @@
     <addaction name="actionEmpty_project"/>
     <addaction name="actionOpen_from_file"/>
     <addaction name="actionAdd_from_file"/>
+    <addaction name="actionAdd_with_timelines_from_file"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_as"/>
@@ -50,13 +51,12 @@
      <string>Timeline</string>
     </property>
     <addaction name="actionAdd_timeline"/>
-   </widget>
-   <widget class="QMenu" name="menuTags">
-    <property name="title">
-     <string>Tags</string>
-    </property>
-    <addaction name="actionAdd_Tag"/>
-    <addaction name="actionShow_Tags"/>
+    <addaction name="separator"/>
+    <addaction name="actionChange_resolution"/>
+    <addaction name="actionChange_color"/>
+    <addaction name="separator"/>
+    <addaction name="actionCut_right"/>
+    <addaction name="actionCut_left"/>
    </widget>
    <widget class="QMenu" name="menuEvents">
     <property name="title">
@@ -64,10 +64,11 @@
     </property>
     <addaction name="actionAdd_Event"/>
     <addaction name="actionErase_selected"/>
+    <addaction name="actionChange_selected_color"/>
+    <addaction name="actionReset_selection"/>
    </widget>
    <addaction name="menuProject"/>
    <addaction name="menuTimeline"/>
-   <addaction name="menuTags"/>
    <addaction name="menuEvents"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -79,9 +80,9 @@
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_4">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -107,9 +108,59 @@
           </layout>
          </item>
          <item>
-          <widget class="QListView" name="TagList"/>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="SelectButton">
+             <property name="text">
+              <string>Select</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="SelectOnlyButton">
+             <property name="text">
+              <string>Select Only</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="UnselectButton">
+             <property name="text">
+              <string>Unselect</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QPushButton" name="HideButton">
+             <property name="text">
+              <string>Hide</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ShowButton">
+             <property name="text">
+              <string>Show</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ShowAllButton">
+             <property name="text">
+              <string>Show All</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="QListView" name="TagList"/>
        </item>
       </layout>
      </item>
@@ -188,6 +239,41 @@
   <action name="actionErase_selected">
    <property name="text">
     <string>Erase selected</string>
+   </property>
+  </action>
+  <action name="actionAdd_with_timelines_from_file">
+   <property name="text">
+    <string>Add with timelines from file</string>
+   </property>
+  </action>
+  <action name="actionChange_selected_color">
+   <property name="text">
+    <string>Change selected color</string>
+   </property>
+  </action>
+  <action name="actionReset_selection">
+   <property name="text">
+    <string>Reset selection</string>
+   </property>
+  </action>
+  <action name="actionChange_resolution">
+   <property name="text">
+    <string>Change resolution</string>
+   </property>
+  </action>
+  <action name="actionCut_left">
+   <property name="text">
+    <string>Cut left</string>
+   </property>
+  </action>
+  <action name="actionCut_right">
+   <property name="text">
+    <string>Cut right</string>
+   </property>
+  </action>
+  <action name="actionChange_color">
+   <property name="text">
+    <string>Change color</string>
    </property>
   </action>
  </widget>

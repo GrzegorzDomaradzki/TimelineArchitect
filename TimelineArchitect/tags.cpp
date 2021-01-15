@@ -14,7 +14,7 @@ int Tags::RegisterTag(QString tag)
 {
     if (HasTag(tag)) return -1;
     _tagsNames[tag] = _now;
-    _tagOwners[_now++] = std::vector<unsigned>();
+    _tagOwners[_now++] = std::vector<const unsigned*>();
     emit OnTagModify();
     return 0;
 }
@@ -29,7 +29,7 @@ int Tags::RenameTag(QString oldName, QString newName)
     return 0;
 }
 
-int Tags::RegisterTagOwner(QString tag, unsigned id)
+int Tags::RegisterTagOwner(QString tag, const unsigned* id)
 {
    if(!HasTag(tag)) return -1;
    _tagOwners[_tagsNames[tag]].push_back(id);
@@ -37,7 +37,7 @@ int Tags::RegisterTagOwner(QString tag, unsigned id)
    return 0;
 }
 
-int Tags::UnregisterTagOwner(QString tag, unsigned owner)
+int Tags::UnregisterTagOwner(QString tag, const unsigned* owner)
 {
     auto vec = _tagOwners[_tagsNames[tag]];
     vec.erase(std::find (vec.begin(), vec.end(), owner));
@@ -53,4 +53,9 @@ int Tags::DeleteTag(QString tag)
     _tagsNames.erase(tag);
     _tagOwners.erase(tagId);
     return 0;
+}
+
+std::vector<const unsigned *> Tags::ProvideTagged(QString tag)
+{
+    return _tagOwners[_tagsNames[tag]];
 }

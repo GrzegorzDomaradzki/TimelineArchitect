@@ -23,12 +23,13 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    QString GetActiveRow();
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
-    TimeMaster *timeEngine;
-    CentralFrame *centralFrame;
+    TimeMaster *_timeEngine;
+    CentralFrame *_centralFrame;
     QStringListModel *tagList;
 
 private slots:
@@ -49,6 +50,28 @@ private slots:
     void on_EraseTagButt_2_clicked();
 
     void on_actionErase_selected_triggered();
+
+
+
+    void on_SelectButton_clicked();
+
+    void on_SelectOnlyButton_clicked();
+
+    void on_UnselectButton_clicked();
+
+    void on_HideButton_clicked();
+
+    void on_ShowButton_clicked();
+
+    void on_ShowAllButton_clicked();
+
+    void on_actionChange_resolution_triggered();
+
+    void on_actionChange_color_triggered();
+
+    void on_actionReset_selection_triggered();
+
+    void on_actionChange_selected_color_triggered();
 
 signals:
 

@@ -40,7 +40,7 @@ public:
      int AddTimeline(Timeline*);
 
 
-     int AddEvent(Event* event,QString& info);
+     int AddEvent(Event* event,QString& info, bool conn = 1);
 
      int SaveProject(QFile);
      int LoadProject(QFile);
@@ -51,10 +51,13 @@ public:
      int findRealPosition(unsigned);
      Timeline* GetTimeline(int);
 
+     std::vector<unsigned> getTagOwners(QString tag);
+
 signals:
 
 public slots:
      void OnSignOut(int);
+     void OnDateChange(unsigned id,bool* succes);
 
 };
 

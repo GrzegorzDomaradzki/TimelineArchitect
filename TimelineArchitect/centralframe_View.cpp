@@ -16,6 +16,10 @@ CentralFrame::CentralFrame(QWidget *parent) :
     _end = 0;
     _noPaint = false;
     _eventsViews = QMap<int,EventFrame*>();
+    _selectedColor = Qt::red;
+    auto pal = this->palette();
+    pal.setColor(QPalette::Background,Qt::white);
+    this->setPalette(pal);
 }
 
 CentralFrame::~CentralFrame()
@@ -32,10 +36,10 @@ void CentralFrame::AddEvent(Event *event)
 
     auto newFrame = new EventFrame(_generator,event,nullptr);
     newFrame->setParent(this);
-    newFrame->setFrameShape(QFrame::StyledPanel);
-    newFrame->setFrameShadow(QFrame::Raised);
     _eventsViews[_generator++] = newFrame;
     newFrame->move(event->realPos*_resolution-_relativePosition,height()/2);
+    newFrame->SetMarkedColor(_selectedColor);
+    newFrame->setAutoFillBackground(true);
     newFrame->show();
     connect(newFrame,&EventFrame::RewerseRepaint,this,&CentralFrame::OnRewersePaint);
     connect(newFrame,&EventFrame::AddMe,this,&CentralFrame::OnAddMe);
@@ -50,6 +54,15 @@ int CentralFrame::GetResolution()
 void CentralFrame::SetResolution(int res)
 {
     if(_resolution>1) _resolution = res;
+    else return;
+    _end/=_resolution;
+    _end*=res;
+    foreach (auto frame, _eventsViews)
+    {
+        frame->move(((frame->x()+_relativePosition)/(double)_resolution*res)-_relativePosition,frame->y());
+    }
+
+    Redraw();
 }
 
 void CentralFrame::Redraw()
@@ -60,6 +73,10 @@ void CentralFrame::Redraw()
 void CentralFrame::UpdateTimelineData()
 {
     _end = timeEngine->getLength()*_resolution;
+    foreach (auto frame, _eventsViews)
+    {
+        frame->move(*(frame->real)*_resolution-_relativePosition,frame->y());
+    }
     Redraw();
 }
 
@@ -99,6 +116,12 @@ void CentralFrame::paintEvent(QPaintEvent *event)
     if (_relativePosition<3) painter->drawLine(now+1,height(),now+1,0);
     now= _resolution;
     PrintDate(now,painter,2);
+    bool control = false;
+    if (endPos+4*_resolution>_end-(int)_relativePosition)
+    {
+        endPos=_end-(int)_relativePosition-4*_resolution;
+        control = true;
+    }
     while ((int)now<endPos)
     {
         if (!toBreak)
@@ -124,11 +147,7 @@ void CentralFrame::paintEvent(QPaintEvent *event)
         ahead--;
         toBreak--;
     }
-    if (endPos+4*_resolution>_end-(int)_relativePosition)
-    {
-        PrintArrow(_end-_relativePosition+_resolution,painter);
-        endPos=_end-(int)_relativePosition-4*_resolution;
-    }
+    if (control) PrintArrow(_end-_relativePosition+_resolution,painter);
     if (!_noPaint) PrintEventLines(painter);
     delete painter;
 }
@@ -167,8 +186,18 @@ void CentralFrame::mouseReleaseEvent(QMouseEvent *event)
     if(length<=0) _relativePosition = 0;
     else if(length>_end-3*_resolution) _relativePosition = _end-3*_resolution;
     else _relativePosition += toAdd.x();
-    //qDebug() << _relativePosition;
     if (old!=_relativePosition) moveEvents(old-_relativePosition);
+}
+
+void CentralFrame::resizeEvent(QResizeEvent *event)
+{
+    //double ratio =  (double)event->size().height()/event->oldSize().height();
+    foreach (auto frame, _eventsViews)
+    {
+        auto y = (double)frame->y()/event->oldSize().height()*event->size().height();
+        if (y<0) y = 0;
+        frame->move(frame->x(),y);
+    }
 }
 
 void CentralFrame::moveEvents(int diff)
@@ -207,6 +236,7 @@ void CentralFrame::PrintEventLines(QPainter *painter)
 {
     foreach(auto event, _eventsViews)
     {
+        if (event->isHidden()) continue;
         painter->setPen(QPen(event->GetColor(),3));
         auto y = event->y()+event->height()/2;
         auto x =*event->real*_resolution - _relativePosition;
@@ -245,6 +275,55 @@ int CentralFrame::Reload(int now, int ahead, QPainter* painter)
    return dist;
 }
 
+void CentralFrame::UnselectAll()
+{
+    foreach (auto select, _selected) {
+        _eventsViews[select]->ChangeRadio();
+    }
+    _selected.clear();
+}
+
+void CentralFrame::HideGiven(std::vector<unsigned> IDs)
+{
+    foreach (auto id, IDs)
+    {
+        OnAddMe(id,0);
+        _eventsViews[id]->hide();
+    }
+    Redraw();
+}
+
+void CentralFrame::ShowGiven(std::vector<unsigned> IDs)
+{
+    foreach (auto id, IDs) _eventsViews[id]->show();
+    Redraw();
+}
+
+void CentralFrame::ShowAll()
+{
+    foreach (auto event, _eventsViews) event->show();
+    Redraw();
+}
+
+void CentralFrame::Purge()
+{
+    _selected.clear();
+    _generator = 0;
+    foreach (auto event, _eventsViews) delete event;
+    _eventsViews.clear();
+}
+
+void CentralFrame::SetSelectedColor(QColor color)
+{
+    _selectedColor = color;
+    foreach (auto frame, _eventsViews) frame->SetMarkedColor(color);
+}
+
+QColor CentralFrame::GetSelectedColor()
+{
+    return _selectedColor;
+}
+
 QString CentralFrame::GetNext()
 {
     if (_toWrite.size()==0) return "dd.mm.yyyy";
@@ -263,8 +342,7 @@ void CentralFrame::OnAddMe(unsigned id, bool add)
 {
     if(add)
     {
-        //foreach (auto select, _selected) if (id == select) return;
-        _selected.push_back(id);
+        if (!_eventsViews[id]->isHidden()) _selected.push_back(id);
         return;
     }
     for (auto iterator = _selected.begin();iterator!=_selected.end(); iterator++) if (*iterator == id)
