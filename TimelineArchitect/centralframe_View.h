@@ -45,7 +45,7 @@ public:
 
     void mouseReleaseEvent(QMouseEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
-    //void mouseDoubleClickEvent(QMouseEvent*) override;
+    void mouseDoubleClickEvent(QMouseEvent*) override;
 
     void moveEvents(int diff);
     void PrintDate(unsigned,QPainter*,int ascended = 0);
@@ -59,6 +59,9 @@ public:
     void ShowAll();
     void Purge();
     void SetSelectedColor(QColor);
+
+
+    void AddHim(unsigned int id,bool add);
 
     QColor GetSelectedColor();
     QString GetNext();

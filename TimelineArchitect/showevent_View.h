@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QPalette>
+#include <QStringListModel>
 #include "event.h"
 
 namespace Ui {
@@ -20,6 +21,7 @@ public:
 
 private:
     Ui::ShowEvent_View *ui;
+    QStringListModel* _tagList;
 };
 
 #endif // SHOWEVENT_VIEW_H

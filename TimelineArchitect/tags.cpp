@@ -15,7 +15,6 @@ int Tags::RegisterTag(QString tag)
     if (HasTag(tag)) return -1;
     _tagsNames[tag] = _now;
     _tagOwners[_now++] = std::vector<const unsigned*>();
-    emit OnTagModify();
     return 0;
 }
 
@@ -25,13 +24,14 @@ int Tags::RenameTag(QString oldName, QString newName)
     if (HasTag(newName)) return -1;
     _tagsNames[newName] = _tagsNames[oldName];
     _tagsNames.erase(oldName);
-    emit OnTagModify();
+    auto toCall = _tagOwners[_tagsNames[newName]];
+    foreach (auto call, toCall) emit NameChange(*call, oldName, newName);
     return 0;
 }
 
-std::vector<QString> Tags::ListActiveTag()
+QStringList Tags::ListActiveTag()
 {
-    std::vector<QString> toRet =  std::vector<QString>();
+    QStringList toRet;
     for (auto iterator = _tagsNames.begin();iterator!=_tagsNames.end();iterator++) toRet.push_back(iterator->first);
     return toRet;
 }
@@ -40,7 +40,7 @@ int Tags::RegisterTagOwner(QString tag, const unsigned* id)
 {
    if(!HasTag(tag)) return -1;
    _tagOwners[_tagsNames[tag]].push_back(id);
-   emit OnTagModify();
+   //emit OnTagModify();
    return 0;
 }
 
@@ -48,17 +48,19 @@ int Tags::UnregisterTagOwner(QString tag, const unsigned* owner)
 {
     auto vec = _tagOwners[_tagsNames[tag]];
     vec.erase(std::find (vec.begin(), vec.end(), owner));
-    emit OnTagModify();
+    //emit OnTagModify();
     return 0;
 }
 
 int Tags::DeleteTag(QString tag)
 {
     if(!HasTag(tag)) return -1;
-    emit OnDeletedTag(tag);
+    //emit OnDeletedTag(tag);
     unsigned tagId = _tagsNames[tag];
     _tagsNames.erase(tag);
+    auto toCall = _tagOwners[_tagsNames[tag]];
     _tagOwners.erase(tagId);
+    foreach (auto call, toCall) emit NameChange(*call, tag, "");
     return 0;
 }
 

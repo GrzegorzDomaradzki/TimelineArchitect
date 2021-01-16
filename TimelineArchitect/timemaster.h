@@ -58,6 +58,7 @@ signals:
 public slots:
      void OnSignOut(int);
      void OnDateChange(unsigned id,bool* succes);
+     void OnNameChange(unsigned, QString, QString);
 
 };
 

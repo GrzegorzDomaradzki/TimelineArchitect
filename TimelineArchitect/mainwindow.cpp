@@ -172,7 +172,7 @@ void MainWindow::on_SelectButton_clicked()
     auto tagText = GetActiveRow();
     if (tagText=="") return;
     auto IDs = _timeEngine->getTagOwners(tagText);
-    foreach (auto id , IDs) _centralFrame->OnAddMe(id,1);
+    foreach (auto id , IDs) _centralFrame->AddHim(id,1);
 }
 
 void MainWindow::on_SelectOnlyButton_clicked()
@@ -181,7 +181,7 @@ void MainWindow::on_SelectOnlyButton_clicked()
     if (tagText=="") return;
     auto IDs = _timeEngine->getTagOwners(tagText);
     _centralFrame->UnselectAll();
-    foreach (auto id , IDs) _centralFrame->OnAddMe(id,1);
+    foreach (auto id , IDs) _centralFrame->AddHim(id,1);
 }
 
 void MainWindow::on_UnselectButton_clicked()
@@ -189,7 +189,7 @@ void MainWindow::on_UnselectButton_clicked()
     auto tagText = GetActiveRow();
     if (tagText=="") return;
     auto IDs = _timeEngine->getTagOwners(tagText);
-    foreach (auto id , IDs) _centralFrame->OnAddMe(id,0);
+    foreach (auto id , IDs) _centralFrame->AddHim(id,0);
 }
 
 void MainWindow::on_HideButton_clicked()

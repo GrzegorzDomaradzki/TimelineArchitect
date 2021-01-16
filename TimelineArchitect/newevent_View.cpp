@@ -17,12 +17,15 @@ NewEvent::~NewEvent()
 
 NewEvent::NewEvent(bool createMode, Event* event, QWidget *parent):
     QDialog(parent),
+    _master(nullptr),
     _event(nullptr),
     _createMode(createMode),
     ui(new Ui::NewEvent)
 {
 
+
     ui->setupUi(this);
+    ui->listView->setModel(_tagList = new QStringListModel(this));
     ui->showColor->setAutoFillBackground(1);
     QPalette pal = ui->showColor->palette();
     color = Qt::lightGray;
@@ -38,6 +41,8 @@ NewEvent::NewEvent(bool createMode, Event* event, QWidget *parent):
         }
         ui->Title->setText(_event->name);
         ui->textEdit->setText(_event->text);
+        auto tags = _event->GetTags();
+        _tagList->setStringList(tags);
         color = _event->color;
     }
     pal.setColor(QPalette::Background, color);
@@ -58,7 +63,7 @@ QDate NewEvent::GetDateStart(QString* info)
         *info = "There is no year 0";
         return date;
     }
-    if (date.daysInMonth()<=ui->dayS->value())
+    if (date.daysInMonth()<ui->dayS->value())
     {
         *info = "Month " + QString::number(date.month()) + " has only " + QString::number(date.daysInMonth()) + " days";
     }
@@ -75,7 +80,7 @@ QDate NewEvent::GetDateEnd(QString* info)
         *info = "There is no year 0";
         return date;
     }
-    if (date.daysInMonth()<=ui->dayE->value())
+    if (date.daysInMonth()<ui->dayE->value())
     {
         *info = "Month " + QString::number(date.month()) + " has only " + QString::number(date.daysInMonth()) + " days";
     }
@@ -102,6 +107,22 @@ void NewEvent::InfoBox(QString info)
     QMessageBox msgBox;
     msgBox.setText(info);
     msgBox.exec();
+}
+
+void NewEvent::SetTags()
+{
+    auto current = _event->GetTags();
+    QStringList toRemove;
+    auto listed = _tagList->stringList();
+    foreach (auto tag, current)
+    {
+      if (listed.removeOne(tag)) continue;
+      toRemove.push_back(tag);
+    }
+    QString ignore;
+    foreach (auto add, listed) _event->AddTag(add,ignore);
+    foreach (auto remove, toRemove) _event->RemoveTag(remove);
+
 }
 
 void NewEvent::SetMaster(TimeMaster *master)
@@ -150,6 +171,7 @@ void NewEvent::on_buttonBox_accepted()
     _event->name=ui->Title->text();
     _event->text=ui->textEdit->toPlainText();
     _event->color = color;
+    SetTags();
     this->close();
 }
 
@@ -225,3 +247,43 @@ int NewEvent::Modify(QDate Start, QDate End)
     }
     return 0;
 }
+
+void NewEvent::on_buttonBox_rejected()
+{
+    this->deleteLater();
+}
+
+void NewEvent::on_Add_clicked()
+{
+    QStringList list;
+    if (_event==nullptr) list = _master->tags->ListActiveTag();
+    else
+    {
+        list = _event->AllTags();
+    }
+    if (list.empty())
+    {
+        InfoBox("First create tag!");
+        return;
+    }
+    foreach (auto string, _tagList->stringList()) list.removeOne(string);
+    bool ok;
+    QString toRet = QInputDialog::getItem(this,"Add Tag to event","Choose tag to add:", list, 0 ,0,&ok);
+    if (!ok) return;
+    if (!toRet.isEmpty())
+    {
+        _tagList->insertRow(0);
+        auto index = _tagList->index(0);
+        _tagList->setData(index,toRet);
+        _tagList->sort(0);
+        return;
+    }
+}
+
+void NewEvent::on_Remove_clicked()
+{
+    auto row = ui->listView->currentIndex().row();
+    _tagList->removeRow(row);
+}
+
+

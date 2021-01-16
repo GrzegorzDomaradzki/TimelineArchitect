@@ -3,6 +3,7 @@
 TimeMaster::TimeMaster(QObject *parent) : QObject(parent)
 {
     tags = new Tags();
+    connect(tags,&Tags::NameChange,this,&TimeMaster::OnNameChange);
 }
 
 TimeMaster::~TimeMaster()
@@ -218,6 +219,12 @@ void TimeMaster::OnDateChange(unsigned id, bool* succes)
     QString s;
     AddEvent(event,s, 0);
     (*succes)=true;
+}
+
+void TimeMaster::OnNameChange(unsigned id, QString oldName, QString newName)
+{
+    if (newName.isEmpty()) _events[id]->ForgetTag(oldName);
+    else _events[id]->RenameTag(oldName,newName);
 }
 
 unsigned TimeMaster::getLength()

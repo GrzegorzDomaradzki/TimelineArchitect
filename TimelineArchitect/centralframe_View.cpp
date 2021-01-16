@@ -201,6 +201,26 @@ void CentralFrame::resizeEvent(QResizeEvent *event)
     }
 }
 
+void CentralFrame::mouseDoubleClickEvent(QMouseEvent *click)
+{
+    if (timeEngine->TimelineCount()==0) return;
+    auto pos = (click->x()-_resolution/2+_relativePosition)/_resolution;
+    if ((int)pos>_end/_resolution) pos = _end/_resolution;
+    auto time = timeEngine->GetTimeline(timeEngine->findRealPosition(pos));
+    auto date = time->GetStart();
+    auto x = (double)(pos-time->GetStartRel())/time->GetLength();
+    auto daysTo = date.daysTo(time->GetEnd());
+    date = date.addDays(daysTo*x);
+    NewEvent dialog(true);
+    dialog.SetMaster(timeEngine);
+    dialog.SetDateStart(date);
+    dialog.SetDateEnd(date);
+    dialog.exec();
+    Event* Event = dialog.GetEvent();
+    if (Event==nullptr) return;
+     this->AddEvent(Event);
+}
+
 void CentralFrame::moveEvents(int diff)
 {
     foreach (auto event, _eventsViews)
@@ -318,6 +338,25 @@ void CentralFrame::SetSelectedColor(QColor color)
 {
     _selectedColor = color;
     foreach (auto frame, _eventsViews) frame->SetMarkedColor(color);
+}
+
+void CentralFrame::AddHim(unsigned int id, bool add)
+{
+    if (add)
+    {
+        for (auto iterator = _selected.begin();iterator!=_selected.end(); iterator++) if (*iterator == id) return;
+        _eventsViews[id]->ChangeRadio();
+        OnAddMe(id,add);
+    }
+    else
+    {
+        for (auto iterator = _selected.begin();iterator!=_selected.end(); iterator++) if (*iterator == id)
+        {
+            _selected.erase(iterator);
+            _eventsViews[id]->ChangeRadio();
+            break;
+        };
+    }
 }
 
 QColor CentralFrame::GetSelectedColor()

@@ -25,6 +25,11 @@ bool Event::AddTag(QString TagName, QString& info)
     return true;
 }
 
+QStringList Event::GetTags()
+{
+    return  _ownedTags;
+}
+
 bool Event::RemoveTag(QString TagName)
 {
     auto iter = std::find(_ownedTags.begin(), _ownedTags.end(), TagName);
@@ -42,6 +47,19 @@ bool Event::IsBinary()
     return !isDual;
 }
 
+bool Event::ForgetTag(QString tag)
+{
+    return _ownedTags.removeOne(tag);
+}
+
+bool Event::RenameTag(QString oldName, QString newName)
+{
+    auto index = _ownedTags.indexOf(oldName);
+    if (index==-1) return  false;
+    _ownedTags[index] = newName;
+    return true;
+}
+
 QDate Event::GetDateStart()
 {
     return _startDate;
@@ -51,6 +69,11 @@ QDate Event::GetDateEnd()
 {
     if (isDual) return _endDate;
     return _startDate;
+}
+
+QStringList Event::AllTags()
+{
+    return _Tags->ListActiveTag();
 }
 
 int Event::reincarnate(QDate date1)

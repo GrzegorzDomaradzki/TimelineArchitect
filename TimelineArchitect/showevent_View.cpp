@@ -29,6 +29,9 @@ ui(new Ui::ShowEvent_View)
         date += " - " + event->GetDateEnd().toString("yyyy.MM.dd");
         ui->date->setText(date);
     }
+    ui->listView->setModel(_tagList = new QStringListModel(this));
+    auto tags = event->GetTags();
+    _tagList->setStringList(tags);
 }
 
 ShowEvent_View::~ShowEvent_View()

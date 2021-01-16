@@ -18,7 +18,7 @@ private:
         QDate _startDate;
         QDate _endDate;
 
-        std::vector<QString> _ownedTags;
+        QStringList _ownedTags;
         Tags* _Tags;
         int _x,_y;
 
@@ -30,13 +30,16 @@ public:
         unsigned realPos;
         unsigned isDual;
 
-        QVector<QString> ReadTags;
         bool AddTag(QString TagName,QString& info) ;
+        QStringList GetTags();
         bool RemoveTag(QString TagName) ;
         bool IsBinary();
+        bool ForgetTag(QString tag);
+        bool RenameTag(QString oldName,QString newName);
 
         QDate GetDateStart() ;
         QDate GetDateEnd() ;
+        QStringList AllTags();
 
         int reincarnate(QDate);
         int reincarnate(QDate,QDate);

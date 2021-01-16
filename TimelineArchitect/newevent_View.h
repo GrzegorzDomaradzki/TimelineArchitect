@@ -5,6 +5,8 @@
 #include "timemaster.h"
 #include <QColorDialog>
 #include <QMessageBox>
+#include <QInputDialog>
+#include <QStringListModel>
 
 namespace Ui {
 class NewEvent;
@@ -17,6 +19,7 @@ class NewEvent : public QDialog
 private:
     TimeMaster* _master;
     Event* _event;
+    QStringListModel* _tagList;
     bool _createMode;
 
 public:
@@ -30,6 +33,7 @@ public:
     void SetDateStart(QDate);
     void SetDateEnd(QDate);
     void InfoBox(QString info);
+    void SetTags();
 
     void SetMaster(TimeMaster* master);
 
@@ -37,6 +41,13 @@ private slots:
     void on_buttonBox_accepted();
     void on_LongTime_stateChanged(int arg1);
     void on_pushButton_clicked();
+
+    void on_buttonBox_rejected();
+
+    void on_Add_clicked();
+
+    void on_Remove_clicked();
+
 
 private:
     Ui::NewEvent *ui;
