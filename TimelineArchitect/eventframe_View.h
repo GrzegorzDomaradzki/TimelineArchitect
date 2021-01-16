@@ -6,6 +6,7 @@
 #include <QMouseEvent>
 #include <QColor>
 #include "newevent_View.h"
+#include "showevent_View.h"
 
 namespace Ui {
 class EventFrame;
@@ -26,6 +27,7 @@ public:
     void SetMarkedColor(QColor);
     void ChangeRadio();
     void SayGoodbye();
+    void ResetData();
 
 
 
@@ -54,7 +56,8 @@ private slots:
     void on_checked_clicked(bool checked);
     void OnGetRelId(unsigned* id);
 
-    void on_EditButton_clicked();
+
+    void on_ShowButton_clicked();
 
 private:
     Ui::EventFrame *ui;
@@ -63,6 +66,7 @@ private:
     unsigned _id;
     QColor _color;
     QColor _markedColor;
+    ShowEvent_View* _view;
 
     void ChangeColors();
 };

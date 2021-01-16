@@ -25,6 +25,11 @@ public:
     NewEvent(bool createMode = true, Event* event = nullptr, QWidget *parent = nullptr);
     Event* GetEvent();
     QColor color;
+    QDate GetDateStart(QString*);
+    QDate GetDateEnd(QString*);
+    void SetDateStart(QDate);
+    void SetDateEnd(QDate);
+    void InfoBox(QString info);
 
     void SetMaster(TimeMaster* master);
 
@@ -35,8 +40,8 @@ private slots:
 
 private:
     Ui::NewEvent *ui;
-    int Add();
-    int Modify();
+    int Add(QDate Start, QDate End);
+    int Modify(QDate Start, QDate End);
 };
 
 #endif // NEWEVENT_H

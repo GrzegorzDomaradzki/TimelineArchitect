@@ -23,6 +23,7 @@ SOURCES += \
     mainwindow.cpp \
     newevent_View.cpp \
     newtimeline_View.cpp \
+    showevent_View.cpp \
     steptype.cpp \
     tags.cpp \
     textformatcontrol.cpp \
@@ -36,6 +37,7 @@ HEADERS += \
     mainwindow.h \
     newevent_View.h \
     newtimeline_View.h \
+    showevent_View.h \
     steptype.h \
     tags.h \
     textformatcontrol.h \
@@ -47,7 +49,8 @@ FORMS += \
     eventframe_View.ui \
     mainwindow.ui \
     newevent_View.ui \
-    newtimeline_View.ui
+    newtimeline_View.ui \
+    showevent_View.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

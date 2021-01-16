@@ -19,6 +19,7 @@ EventFrame::EventFrame(unsigned new_id, QWidget *parent) :
     ui->setupUi(this);
     _id = new_id;
     real = dual = nullptr;
+    _view = nullptr;
 
 }
 
@@ -29,25 +30,14 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
         this->setAutoFillBackground(true);
     connect(event,&Event::GetRelId,this,&EventFrame::OnGetRelId);
     ui->setupUi(this);
-
     _color = event->color;
     _markedColor = Qt::red;
-    QPalette pal = this->palette();
-    pal.setColor(QPalette::Window, _color);
-    this->setPalette(pal);
     _id = new_id;
     _event = event;
     real = &event->realPos;
     dual = &event->isDual;
-    ui->TitleLab->setText(event->name);
-    ui->DescLab->setText(event->text);
-    if(event->IsBinary()) ui->DateLab->setText(event->GetDateStart().toString("yyyy.MM.dd"));
-    else
-    {
-        QString date = event->GetDateStart().toString("yyyy.MM.dd");
-        date += " - " + event->GetDateEnd().toString("yyyy.MM.dd");
-        ui->DateLab->setText(date);
-    }
+    _view = nullptr;
+    ResetData();
     this->raise();
 }
 
@@ -102,6 +92,22 @@ void EventFrame::SayGoodbye()
     this->close();
 }
 
+void EventFrame::ResetData()
+{
+    QPalette pal = this->palette();
+    pal.setColor(QPalette::Window, _color);
+    this->setPalette(pal);
+    ui->TitleLab->setText(_event->name);
+    ui->DescLab->setText(_event->text);
+    if(_event->IsBinary()) ui->DateLab->setText(_event->GetDateStart().toString("yyyy.MM.dd"));
+    else
+    {
+        QString date = _event->GetDateStart().toString("yyyy.MM.dd");
+        date += " - " + _event->GetDateEnd().toString("yyyy.MM.dd");
+        ui->DateLab->setText(date);
+    }
+}
+
 
 
 
@@ -150,11 +156,10 @@ void EventFrame::mouseReleaseEvent(QMouseEvent *event)
 void EventFrame::mouseDoubleClickEvent(QMouseEvent*)
 {
 
-    NewEvent dialog(false);
-    dialog.SetMaster();
+    NewEvent dialog(false,_event);
+    dialog.SetMaster(nullptr);
     dialog.exec();
-    Event* event = dialog.GetEvent();
-    emit RewerseRepaint();
+    ResetData();
 }
 
 
@@ -177,7 +182,13 @@ void EventFrame::OnGetRelId(unsigned *id)
     *id = _id;
 }
 
-void EventFrame::on_EditButton_clicked()
-{
 
+void EventFrame::on_ShowButton_clicked()
+{
+    if (_view!= nullptr)
+    {
+        delete _view;
+    }
+    _view = new ShowEvent_View(_event);
+    _view->show();
 }

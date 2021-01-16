@@ -29,6 +29,13 @@ int Tags::RenameTag(QString oldName, QString newName)
     return 0;
 }
 
+std::vector<QString> Tags::ListActiveTag()
+{
+    std::vector<QString> toRet =  std::vector<QString>();
+    for (auto iterator = _tagsNames.begin();iterator!=_tagsNames.end();iterator++) toRet.push_back(iterator->first);
+    return toRet;
+}
+
 int Tags::RegisterTagOwner(QString tag, const unsigned* id)
 {
    if(!HasTag(tag)) return -1;

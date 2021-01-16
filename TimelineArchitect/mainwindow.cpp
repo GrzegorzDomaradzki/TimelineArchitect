@@ -105,6 +105,8 @@ void MainWindow::on_actionAdd_Event_triggered()
     }
     NewEvent dialog(true);
     dialog.SetMaster(_timeEngine);
+    dialog.SetDateStart(_timeEngine->GetTimeline(0)->GetStart().addDays(1));
+    dialog.SetDateEnd(_timeEngine->GetTimeline(_timeEngine->TimelineCount()-1)->GetEnd().addDays(-1));
     dialog.exec();
     Event* event = dialog.GetEvent();
     if (event!=nullptr) _centralFrame->AddEvent(event);

@@ -16,6 +16,7 @@ public:
     bool HasTag(QString);
     int RegisterTag(QString);
     int RenameTag(QString, QString);
+    std::vector<QString> ListActiveTag();
     int RegisterTagOwner(QString,const unsigned*);
     int UnregisterTagOwner(QString,const unsigned*);
     int DeleteTag(QString);

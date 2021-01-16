@@ -20,6 +20,10 @@ public:
     ~NewTimeline();
 
     void SetMaster(TimeMaster*);
+    QDate GetDateStart(QString*);
+    QDate GetDateEnd(QString*);
+    void SetDateStart(QDate);
+    void SetDateEnd(QDate);
 
 
 private slots:

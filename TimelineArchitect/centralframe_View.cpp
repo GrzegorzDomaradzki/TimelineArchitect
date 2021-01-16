@@ -187,6 +187,7 @@ void CentralFrame::mouseReleaseEvent(QMouseEvent *event)
     else if(length>_end-3*_resolution) _relativePosition = _end-3*_resolution;
     else _relativePosition += toAdd.x();
     if (old!=_relativePosition) moveEvents(old-_relativePosition);
+    Redraw();
 }
 
 void CentralFrame::resizeEvent(QResizeEvent *event)
