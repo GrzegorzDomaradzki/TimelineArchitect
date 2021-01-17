@@ -134,6 +134,11 @@ void NewEvent::on_buttonBox_accepted()
 {
 
     QString info = "";
+    if (!TextFormatControl::TitleTextName(ui->Title->text(),info) || !TextFormatControl::TitleTextName(ui->textEdit->toPlainText(),info))
+    {
+        InfoBox(info);
+        return;
+    }
     QDate Start = GetDateStart(&info);
     if (!info.isEmpty())
     {

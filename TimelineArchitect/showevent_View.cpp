@@ -22,11 +22,13 @@ ui(new Ui::ShowEvent_View)
     ui->colorLabel2->setPalette(pal);
     ui->title->setText(event->name);
     ui->textEdit->setText(event->text);
-    if(event->IsBinary()) ui->date->setText(event->GetDateStart().toString("yyyy.MM.dd"));
+    auto start = event->GetDateStart();
+    QString date = QString::number(start.year()) +"." + QString::number(start.month()) +"." +QString::number(start.day());
+    if(event->IsBinary()) ui->date->setText(date);
     else
     {
-        QString date = event->GetDateStart().toString("yyyy.MM.dd");
-        date += " - " + event->GetDateEnd().toString("yyyy.MM.dd");
+        auto end = event->GetDateEnd();
+        date += " <-> " +  QString::number(end.year()) +"." + QString::number(end.month()) +"." +QString::number(end.day());
         ui->date->setText(date);
     }
     ui->listView->setModel(_tagList = new QStringListModel(this));

@@ -43,7 +43,7 @@ public:
 
         int reincarnate(QDate);
         int reincarnate(QDate,QDate);
-        void Save(QTextStream out);
+        void Save(QTextStream &out);
         void Unregister();
         unsigned TranslateId();
 

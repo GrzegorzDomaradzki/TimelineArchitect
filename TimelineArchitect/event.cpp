@@ -101,7 +101,7 @@ int Event::reincarnate(QDate date1,QDate date2)
     return -1;
 }
 
-void Event::Save(QTextStream out)
+void Event::Save(QTextStream &out)
 {
     out<<"<Event>\n";
     out<< "\t<StartDate>"<< _startDate.toString() <<"</StartDate>\n";
@@ -115,7 +115,7 @@ void Event::Save(QTextStream out)
         foreach(auto tag, _ownedTags) out << "\t\t<Tag>"<<tag<<"</Tag>\n";
         out<<"\t</Tags>\n";
     }
-    out<<"</Event>\n";
+    out<<"</Event>\n\n";
 }
 
 void Event::Unregister()

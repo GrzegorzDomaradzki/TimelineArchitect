@@ -3,6 +3,7 @@
 TimeMaster::TimeMaster(QObject *parent) : QObject(parent)
 {
     tags = new Tags();
+    Filename = "";
     connect(tags,&Tags::NameChange,this,&TimeMaster::OnNameChange);
 }
 
@@ -139,6 +140,18 @@ int TimeMaster::AddEvent(Event* event, QString &info, bool coon)
         connect(event,&Event::SignOut, this, &TimeMaster::OnSignOut);
         connect(event,&Event::DateChange, this, &TimeMaster::OnDateChange);
     }
+    return 0;
+}
+
+int TimeMaster::SaveProject()
+{
+    QFile file(Filename);
+    if (!file.open(QIODevice::WriteOnly| QIODevice::Truncate | QIODevice::Text)) return -1;
+    QTextStream stream(&file);
+    foreach(auto timeline, _timelines) timeline->Save(stream);
+    foreach(auto event, _events) event->Save(stream);
+    stream.flush();
+    file.close();
     return 0;
 }
 

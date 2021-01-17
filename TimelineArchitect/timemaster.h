@@ -11,6 +11,7 @@
 #include <QDate>
 #include <QFile>
 #include <memory>
+#include <QTextStream>
 
 
 class TimeMaster : public QObject
@@ -20,13 +21,13 @@ private:
 
     std::vector<Timeline*> _timelines;
     std::vector<Event*> _events;
-    //std::vector<unsigned> _events_id;
-    //int _currID;
+
     unsigned _length;
 
 
 public:
     Tags* tags;
+    QString Filename;
     explicit TimeMaster(QObject *parent = nullptr);
     ~TimeMaster();
 
@@ -42,8 +43,8 @@ public:
 
      int AddEvent(Event* event,QString& info, bool conn = 1);
 
-     int SaveProject(QFile);
-     int LoadProject(QFile);
+     int SaveProject();
+     int LoadProject();
      unsigned getLength();
      void updateLength();
      void UpdateEventsReals();

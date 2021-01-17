@@ -23,3 +23,13 @@ bool TextFormatControl::TagName(QString tag, QString& info)
     }
     return true;
 }
+
+bool TextFormatControl::TitleTextName(QString text, QString &info)
+{
+    if (text.contains("<") || text.contains(">"))
+    {
+        info = "\">\" and \"<\" are special characters, and can't be used in event description";
+        return false;
+    }
+    return true;
+}

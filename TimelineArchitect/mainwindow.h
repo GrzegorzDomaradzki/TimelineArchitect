@@ -12,6 +12,7 @@
 #include "eventframe_View.h"
 #include "centralframe_View.h"
 #include <QStringListModel>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,6 +25,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     QString GetActiveRow();
+    QString SetFile();
     ~MainWindow();
 
 private:
@@ -72,6 +74,10 @@ private slots:
     void on_actionReset_selection_triggered();
 
     void on_actionChange_selected_color_triggered();
+
+    void on_actionSave_triggered();
+
+    void on_actionSave_as_triggered();
 
 signals:
 

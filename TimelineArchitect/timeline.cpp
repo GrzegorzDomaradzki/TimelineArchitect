@@ -122,26 +122,26 @@ int Timeline::StepsAchead(int position, int ahead, std::vector<QString> *_toWrit
     case week: curr=curr.addDays(position*_multi);
         for (int i=0;i<rest;i+=15)
         {
-            _toWrite->push_back(curr.toString("yyyy.MM.dd"));
+            _toWrite->push_back(QString::number(curr.year()) +"." + QString::number(curr.month()) +"." +QString::number(curr.day()));
             curr=curr.addDays(15*_multi);
         }
         break;
     case month: curr=curr.addMonths(position);
         for (int i=0;i<rest;i+=15)
         {
-            _toWrite->push_back(curr.toString("yyyy.MM"));
+            _toWrite->push_back(QString::number(curr.year()) +"." + QString::number(curr.month()));
             curr=curr.addMonths(15);
         }
         break;
     default: curr=curr.addYears(position*_multi);
         for (int i=0;i<rest;i+=15)
         {
-            _toWrite->push_back(curr.toString("yyyy"));
+            _toWrite->push_back(QString::number(curr.year()));
             curr=curr.addYears(15*_multi);
         }
         break;
     }
-    _toWrite->push_back(_end.toString("yyyy.MM.dd"));
+    _toWrite->push_back(QString::number(_end.year()) +"." + QString::number(_end.month()) +"." +QString::number(_end.day()));
     return rest;
 }
 
@@ -181,14 +181,14 @@ StepType Timeline::GetStep()
     return _step;
 }
 
-void Timeline::Save(QTextStream out)
+void Timeline::Save(QTextStream &out)
 {
     out<<"<Timeline>\n";
-    out<< "\t<StartDate> " << _start.toString() <<" </StartDate>\n";
-    out<< "\t<EndDate> " << _end.toString() <<" </EndDate>\n";
+    out<< "\t<StartDate> " << QString::number(_start.year()) +"." + QString::number(_start.month()) +"." +QString::number(_start.day())  <<" </StartDate>\n";
+    out<< "\t<EndDate> " << QString::number(_end.year()) +"." + QString::number(_end.month()) +"." +QString::number(_end.day()) <<" </EndDate>\n";
 
     out<< "\t<Step>" << UnitNames.at(_step) <<"</Step>\n";
-    out<<"</Timeline>\n";
+    out<<"</Timeline>\n\n";
 
 }
 

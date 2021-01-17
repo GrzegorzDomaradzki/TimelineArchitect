@@ -7,6 +7,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QStringListModel>
+#include "textformatcontrol.h"
 
 namespace Ui {
 class NewEvent;

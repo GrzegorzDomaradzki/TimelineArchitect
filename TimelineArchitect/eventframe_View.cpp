@@ -30,6 +30,9 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
         this->setAutoFillBackground(true);
     connect(event,&Event::GetRelId,this,&EventFrame::OnGetRelId);
     ui->setupUi(this);
+//    ui->DateLab->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+//    ui->TitleLab->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+//    this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     _color = event->color;
     _markedColor = Qt::red;
     _id = new_id;
@@ -99,13 +102,19 @@ void EventFrame::ResetData()
     this->setPalette(pal);
     ui->TitleLab->setText(_event->name);
     ui->DescLab->setText(_event->text);
-    if(_event->IsBinary()) ui->DateLab->setText(_event->GetDateStart().toString("yyyy.MM.dd"));
+    auto start = _event->GetDateStart();
+    QString date = QString::number(start.year()) +"." + QString::number(start.month()) +"." +QString::number(start.day());
+    if(_event->IsBinary()) ui->DateLab->setText(date);
     else
     {
-        QString date = _event->GetDateStart().toString("yyyy.MM.dd");
-        date += " - " + _event->GetDateEnd().toString("yyyy.MM.dd");
+        auto end = _event->GetDateEnd();
+        date += " <-> " +  QString::number(end.year()) +"." + QString::number(end.month()) +"." +QString::number(end.day());
         ui->DateLab->setText(date);
     }
+    auto size = ui->TitleLab->sizeHint().width()+10;
+    int altSize;
+    if (size<(altSize= ui->DateLab->sizeHint().width()+ui->checked->sizeHint().width()+ ui->ShowButton->sizeHint().width())) size = altSize+10;
+    this->resize(size,height());
 }
 
 

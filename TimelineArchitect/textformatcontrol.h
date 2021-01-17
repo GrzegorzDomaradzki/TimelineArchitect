@@ -9,7 +9,7 @@ class TextFormatControl
 
 public:
     static bool TagName(QString tag, QString& info);
-
+    static bool TitleTextName(QString text, QString& info);
 
 
 };

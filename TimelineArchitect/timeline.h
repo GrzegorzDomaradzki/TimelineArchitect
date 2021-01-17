@@ -55,7 +55,7 @@ public:
     int SetStep(StepType unit);
     StepType GetStep();
 
-    void Save(QTextStream out);
+    void Save(QTextStream &out);
 
 
 };

@@ -30,6 +30,15 @@ QString MainWindow::GetActiveRow()
     return tagList->data(tagList->index(row)).toString();
 }
 
+QString MainWindow::SetFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+                               QDir::currentPath(),
+                               tr("save files (*.time)"));
+    return fileName;
+
+}
+
 
 
 MainWindow::~MainWindow()
@@ -241,4 +250,28 @@ void MainWindow::on_actionChange_selected_color_triggered()
     {
     _centralFrame->SetSelectedColor(color);
     }
+}
+
+void MainWindow::on_actionSave_triggered()
+{
+    if (_timeEngine->Filename.isEmpty())
+    {
+        auto fileName = SetFile();
+        if(fileName.isEmpty()) return;
+        _timeEngine->Filename = fileName;
+    }
+    if (-1==_timeEngine->SaveProject())
+    {
+            QMessageBox msgBox;
+            msgBox.setText("file can't be opened");
+            msgBox.exec();
+    }
+}
+
+void MainWindow::on_actionSave_as_triggered()
+{
+    auto newName = SetFile();
+    if (newName.isEmpty()) return;
+    _timeEngine->Filename = newName;
+    on_actionSave_triggered();
 }
