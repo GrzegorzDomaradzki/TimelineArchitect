@@ -125,6 +125,17 @@ void NewEvent::SetTags()
 
 }
 
+void NewEvent::SetEnabled(bool state)
+{
+    ui->LongTimeLabel->setEnabled(state);
+    ui->dayE->setEnabled(state);
+    ui->monthE->setEnabled(state);
+    ui->yearE->setEnabled(state);
+    ui->label_acitve1->setEnabled(state);
+    ui->label_acitve2->setEnabled(state);
+    ui->label_acitve3->setEnabled(state);
+}
+
 void NewEvent::SetMaster(TimeMaster *master)
 {
     _master=master;
@@ -182,20 +193,7 @@ void NewEvent::on_buttonBox_accepted()
 
 void NewEvent::on_LongTime_stateChanged(int arg1)
 {
-    if(arg1)
-    {
-        ui->LongTimeLabel->setEnabled(1);
-        ui->dayE->setEnabled(1);
-        ui->monthE->setEnabled(1);
-        ui->yearE->setEnabled(1);
-    }
-    else
-    {
-        ui->LongTimeLabel->setEnabled(0);
-        ui->dayE->setEnabled(0);
-        ui->monthE->setEnabled(0);
-        ui->yearE->setEnabled(0);
-    }
+    SetEnabled(arg1!=0);
 }
 
 void NewEvent::on_pushButton_clicked()

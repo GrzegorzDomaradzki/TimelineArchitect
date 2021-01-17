@@ -97,7 +97,7 @@ void CentralFrame::EraseSelected()
     }
 }
 
-void CentralFrame::paintEvent(QPaintEvent *event)
+void CentralFrame::paintEvent(QPaintEvent *)
 {
     if (_end==0) return;
     auto painter = new QPainter(this);
@@ -127,6 +127,8 @@ void CentralFrame::paintEvent(QPaintEvent *event)
         if (!toBreak)
         {
             toBreak = Reload(now,ahead,painter);
+            painter->drawLine(now-_resolution,mid-2.5*_resolution,now+_resolution,mid-2.5*_resolution);
+            painter->drawLine(now-_resolution,mid+2.5*_resolution,now+_resolution,mid+2.5*_resolution);
             i = 1;
         }
         else
@@ -204,7 +206,7 @@ void CentralFrame::resizeEvent(QResizeEvent *event)
 void CentralFrame::mouseDoubleClickEvent(QMouseEvent *click)
 {
     if (timeEngine->TimelineCount()==0) return;
-    auto pos = (click->x()-_resolution/2+_relativePosition)/_resolution;
+    auto pos = (click->x()+_resolution/2+_relativePosition)/_resolution;
     if ((int)pos>_end/_resolution) pos = _end/_resolution;
     auto time = timeEngine->GetTimeline(timeEngine->findRealPosition(pos));
     auto date = time->GetStart();
@@ -284,7 +286,7 @@ int CentralFrame::GetDist(int ahead, int position)
     else if (timeEngine->TimelineCount()==next) return 9999;
     auto timeline = timeEngine->GetTimeline(next);
     next++;
-    return  timeline->StepsAchead(position/_resolution,ahead,&_toWrite);
+    return  timeline->StepsAchead(position/_resolution,ahead,&_toWrite)-1;
 }
 
 int CentralFrame::Reload(int now, int ahead, QPainter* painter)
@@ -308,7 +310,7 @@ void CentralFrame::HideGiven(std::vector<unsigned> IDs)
 {
     foreach (auto id, IDs)
     {
-        OnAddMe(id,0);
+        AddHim(id,0);
         _eventsViews[id]->hide();
     }
     Redraw();
@@ -340,8 +342,19 @@ void CentralFrame::SetSelectedColor(QColor color)
     foreach (auto frame, _eventsViews) frame->SetMarkedColor(color);
 }
 
+std::vector<unsigned> CentralFrame::SelectedBackednIDs()
+{
+    auto vec = std::vector<unsigned>();
+    foreach (auto selected, _selected)
+    {
+        vec.push_back(_eventsViews[selected]->getBackendID());
+    }
+    return vec;
+}
+
 void CentralFrame::AddHim(unsigned int id, bool add)
 {
+    if (_eventsViews[id]->isHidden()) return;
     if (add)
     {
         for (auto iterator = _selected.begin();iterator!=_selected.end(); iterator++) if (*iterator == id) return;
@@ -371,9 +384,14 @@ QString CentralFrame::GetNext()
     return _toWrite[_bookmark];
 }
 
-void CentralFrame::OnRewersePaint()
+void CentralFrame::OnRewersePaint(int i)
 {
-    if (!(_noPaint = !_noPaint)) this->repaint();
+    if (i==0){if (!(_noPaint = !_noPaint)) this->repaint();}
+    else
+    {
+        _noPaint= (i==-1);
+        this->repaint();
+    }
 }
 
 

@@ -23,12 +23,14 @@ ui(new Ui::ShowEvent_View)
     ui->title->setText(event->name);
     ui->textEdit->setText(event->text);
     auto start = event->GetDateStart();
-    QString date = QString::number(start.year()) +"." + QString::number(start.month()) +"." +QString::number(start.day());
+    auto date = QString::number(start.day()) +"." + QString::number(start.month()) +"." +QString::number(abs(start.year()));
+    if (start.year()<0) date+="BCE";
     if(event->IsBinary()) ui->date->setText(date);
     else
     {
         auto end = event->GetDateEnd();
-        date += " <-> " +  QString::number(end.year()) +"." + QString::number(end.month()) +"." +QString::number(end.day());
+        date += " <-> " +  QString::number(end.day()) +"." + QString::number(end.month()) +"." +QString::number(abs(end.year()));
+        if (start.year()<0) date+="BCE";
         ui->date->setText(date);
     }
     ui->listView->setModel(_tagList = new QStringListModel(this));

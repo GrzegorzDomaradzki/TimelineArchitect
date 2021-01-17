@@ -79,6 +79,14 @@ private slots:
 
     void on_actionSave_as_triggered();
 
+    void on_actionSave_selected_as_triggered();
+
+    void on_actionOpen_from_file_triggered();
+
+    void on_actionAdd_from_file_triggered();
+
+    void on_actionAdd_with_timelines_from_file_triggered();
+
 signals:
 
 };

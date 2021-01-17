@@ -25,6 +25,7 @@ SOURCES += \
     newtimeline_View.cpp \
     showevent_View.cpp \
     steptype.cpp \
+    streamReader.cpp \
     tags.cpp \
     textformatcontrol.cpp \
     timeline.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     newtimeline_View.h \
     showevent_View.h \
     steptype.h \
+    streamReader.h \
     tags.h \
     textformatcontrol.h \
     timeline.h \

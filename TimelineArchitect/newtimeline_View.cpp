@@ -43,7 +43,6 @@ void NewTimeline::on_buttonBox_accepted()
     if (timeline->GetStart().daysTo(timeline->GetEnd())>2 && timeline->GetStart()<timeline->GetEnd())
     {
     _master->AddTimeline(timeline);
-    _master->updateLength();
     this->close();
     }
     else

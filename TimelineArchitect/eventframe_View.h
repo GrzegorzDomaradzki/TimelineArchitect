@@ -28,6 +28,7 @@ public:
     void ChangeRadio();
     void SayGoodbye();
     void ResetData();
+    unsigned getBackendID();
 
 
 
@@ -48,7 +49,7 @@ public slots:
 
 signals:
     void AddMe(unsigned int id, bool Add);
-    void RewerseRepaint();
+    void RewerseRepaint(int);
 
 
 private slots:

@@ -39,6 +39,8 @@ QStringList Tags::ListActiveTag()
 int Tags::RegisterTagOwner(QString tag, const unsigned* id)
 {
    if(!HasTag(tag)) return -1;
+   auto x = _tagOwners[_tagsNames[tag]];
+   if (!x.empty() && std::find(x.begin(),x.end(),id)!=x.end()) return -1;
    _tagOwners[_tagsNames[tag]].push_back(id);
    //emit OnTagModify();
    return 0;
@@ -47,7 +49,9 @@ int Tags::RegisterTagOwner(QString tag, const unsigned* id)
 int Tags::UnregisterTagOwner(QString tag, const unsigned* owner)
 {
     auto vec = _tagOwners[_tagsNames[tag]];
-    vec.erase(std::find (vec.begin(), vec.end(), owner));
+    auto x = std::find (vec.begin(), vec.end(), owner);
+    if (x==vec.end()) return -1;
+    vec.erase(x);
     //emit OnTagModify();
     return 0;
 }

@@ -5,20 +5,18 @@ bool Event::AddTag(QString TagName, QString& info)
 {
 
     info = "Tag added succesfully";
-    if (TagName.isEmpty() || TagName[0]=='_')
-    {
-        info = "TagName can't be empty or starts from '_'";
-        return false;
-    }
     if(std::find(_ownedTags.begin(), _ownedTags.end(), TagName) != _ownedTags.end()) {
         info = "Event alredy has this tag";
         return false;
     }
-    int succ = _Tags->RegisterTagOwner(TagName,&id);
-    if (succ==-1)
+    if(_Tags!=nullptr)
     {
-        _Tags->RegisterTag(TagName);
-        _Tags->RegisterTagOwner(TagName,&id);
+        int succ = _Tags->RegisterTagOwner(TagName,&id);
+        if (succ==-1)
+        {
+            _Tags->RegisterTag(TagName);
+            _Tags->RegisterTagOwner(TagName,&id);
+        }
     }
     _ownedTags.push_back(TagName);
     std::sort(_ownedTags.begin(), _ownedTags.end());
@@ -33,7 +31,7 @@ QStringList Event::GetTags()
 bool Event::RemoveTag(QString TagName)
 {
     auto iter = std::find(_ownedTags.begin(), _ownedTags.end(), TagName);
-    _Tags->UnregisterTagOwner(TagName,&id);
+    if (_Tags!=nullptr)_Tags->UnregisterTagOwner(TagName,&id);
     if(*iter==TagName)
     {
         _ownedTags.erase(iter);
@@ -73,6 +71,7 @@ QDate Event::GetDateEnd()
 
 QStringList Event::AllTags()
 {
+    if (_Tags==nullptr) return QStringList();
     return _Tags->ListActiveTag();
 }
 
@@ -104,15 +103,15 @@ int Event::reincarnate(QDate date1,QDate date2)
 void Event::Save(QTextStream &out)
 {
     out<<"<Event>\n";
-    out<< "\t<StartDate>"<< _startDate.toString() <<"</StartDate>\n";
-    if (isDual) out << "\t<EndDate>" << _endDate.toString() << "</EndDate>\n";
+    out<< "\t<StartDate> "<< QString::number(_startDate.day()) +"." + QString::number(_startDate.month()) +"." +QString::number(_startDate.year()) <<" </StartDate>\n";
+    if (isDual) out << "\t<EndDate> " << QString::number(_endDate.day()) +"." + QString::number(_endDate.month()) +"." +QString::number(_endDate.year()) << " </EndDate>\n";
     out<< "\t<Title> " << name << " </Title>\n";
     out<< "\t<Text> " << text << " </Text>\n";
-    out<< "\t<color>" << color.name() << "</color>\n";
+    out<< "\t<Color> " << color.name() << " </Color>\n";
     if (!_ownedTags.empty())
     {
         out<<"\t<Tags>\n";
-        foreach(auto tag, _ownedTags) out << "\t\t<Tag>"<<tag<<"</Tag>\n";
+        foreach(auto tag, _ownedTags) out << "\t\t<Tag> "<<tag<<" </Tag>\n";
         out<<"\t</Tags>\n";
     }
     out<<"</Event>\n\n";
@@ -122,6 +121,25 @@ void Event::Unregister()
 {
     emit SignOut(id);
     deleteLater();
+}
+
+void Event::ReregisterTags()
+{
+    if (_Tags==nullptr) return;
+    foreach(auto tag, _ownedTags)
+    {
+        if(-1==_Tags->RegisterTagOwner(tag,&id))
+        {
+            _Tags->RegisterTag(tag);
+            _Tags->RegisterTagOwner(tag,&id);
+        }
+    }
+}
+
+void Event::ProvideBoss(Tags *tags)
+{
+    _Tags = tags;
+    ReregisterTags();
 }
 
 unsigned Event::TranslateId()
@@ -138,16 +156,17 @@ Event::Event(QObject *parent) : QObject(parent)
 
 Event::Event(Tags* boss,QDate start, QObject *parent): QObject(parent),_startDate(start),_Tags(boss), _x(-1),_y(-1), isDual(0)
 {
+    color = Qt::lightGray;
 }
 
 Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),_Tags(boss), _x(-1),_y(-1),isDual(1)
 {
+    color = Qt::lightGray;
 }
 
 Event::~Event()
 {
-
-    foreach (auto TagName, _ownedTags) {
+    if (_Tags!=nullptr) foreach (auto TagName, _ownedTags) {
         _Tags->UnregisterTagOwner(TagName,&id);
     }
 }

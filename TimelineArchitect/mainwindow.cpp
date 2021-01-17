@@ -35,6 +35,7 @@ QString MainWindow::SetFile()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
                                QDir::currentPath(),
                                tr("save files (*.time)"));
+    if(!fileName.contains(".time"))fileName+=".time";
     return fileName;
 
 }
@@ -43,8 +44,7 @@ QString MainWindow::SetFile()
 
 MainWindow::~MainWindow()
 {
-    delete  _centralFrame;
-    delete  _timeEngine;
+
     delete ui;
 
 }
@@ -63,10 +63,10 @@ void MainWindow::on_actionEmpty_project_triggered()
         _timeEngine = nullptr;
     }
     _timeEngine = new TimeMaster(this);
-    _centralFrame = new CentralFrame(centralWidget());
     _centralFrame->timeEngine = _timeEngine;
     _centralFrame->Purge();
     _centralFrame->UpdateTimelineData();
+    tagList->setStringList(_timeEngine->ListActiveTags());
 }
 
 void MainWindow::on_AddTagButt_clicked()
@@ -274,4 +274,59 @@ void MainWindow::on_actionSave_as_triggered()
     if (newName.isEmpty()) return;
     _timeEngine->Filename = newName;
     on_actionSave_triggered();
+}
+
+void MainWindow::on_actionSave_selected_as_triggered()
+{
+    auto old = _timeEngine->Filename;
+    auto newName = SetFile();
+    if (newName.isEmpty()) return;
+    _timeEngine->Filename = newName;
+    _timeEngine->SaveSelected(_centralFrame->SelectedBackednIDs());
+    _timeEngine->Filename = old;
+}
+
+void MainWindow::on_actionOpen_from_file_triggered()
+{
+    on_actionEmpty_project_triggered();
+    on_actionAdd_with_timelines_from_file_triggered();
+
+}
+
+void MainWindow::on_actionAdd_from_file_triggered()
+{
+    auto newName  = QFileDialog::getOpenFileName(this, tr("Open file"),  QDir::currentPath(), tr("Save Files (*.time)"));
+    if (newName.isEmpty()) return;
+    std::vector<Event*> vec;
+    vec.clear();
+    try {
+         _timeEngine->AddFromFile(newName,0);
+    } catch (QString info) {
+        QMessageBox msgBox;
+        msgBox.setText(info);
+        msgBox.exec();
+        return;
+    }
+    foreach (auto event, vec) _centralFrame->AddEvent(event);
+    tagList->setStringList(_timeEngine->ListActiveTags());
+    _centralFrame->UpdateTimelineData();
+}
+
+void MainWindow::on_actionAdd_with_timelines_from_file_triggered()
+{
+    auto newName  = QFileDialog::getOpenFileName(this, tr("Open file"),  QDir::currentPath(), tr("Save Files (*.time)"));
+    if (newName.isEmpty()) return;
+    std::vector<Event*> vec;
+    vec.clear();
+    try {
+         vec = _timeEngine->AddFromFile(newName,1);
+    } catch (QString info) {
+        QMessageBox msgBox;
+        msgBox.setText(info);
+        msgBox.exec();
+        return;
+    }
+    foreach (auto event, vec) _centralFrame->AddEvent(event);
+    tagList->setStringList(_timeEngine->ListActiveTags());
+    _centralFrame->UpdateTimelineData();
 }

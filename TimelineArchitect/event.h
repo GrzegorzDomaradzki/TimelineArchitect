@@ -45,6 +45,8 @@ public:
         int reincarnate(QDate,QDate);
         void Save(QTextStream &out);
         void Unregister();
+        void ReregisterTags();
+        void ProvideBoss(Tags* tags);
         unsigned TranslateId();
 
 public:

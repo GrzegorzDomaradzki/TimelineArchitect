@@ -115,8 +115,17 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     }
     else if (i!=(int)_timelines.size()-1 && timeline->GetStep()==_timelines[i+1]->GetStep()) AddTimeline(new Timeline (timeline->GetStart(),_timelines[i+1]->GetEnd(),timeline->GetStep(),this));
     control--;
-    if (!control) UpdateEventsReals();
+    if (!control)
+    {
+        UpdateEventsReals();
+        updateLength();
+    }
     return 0;
+}
+
+QStringList TimeMaster::ListActiveTags()
+{
+    return tags->ListActiveTag();
 }
 
 int TimeMaster::AddEvent(Event* event, QString &info, bool coon)
@@ -133,8 +142,8 @@ int TimeMaster::AddEvent(Event* event, QString &info, bool coon)
     _events.insert(_events.begin()+pos,event);
     event->id = pos++;
     for (;pos<(int)_events.size();pos++) _events[pos]->id = pos;
-    event->realPos = _timelines[timelinePos]->GetReal(event->GetDateStart());
-    if (event->isDual) event->isDual = _timelines[endPos]->GetReal(event->GetDateEnd());
+    event->realPos = _timelines[timelinePos]->GetReal(event->GetDateStart())+_timelines[timelinePos]->GetStartRel();
+    if (event->isDual) event->isDual = _timelines[endPos]->GetReal(event->GetDateEnd())+_timelines[endPos]->GetStartRel();
     if (coon)
     {
         connect(event,&Event::SignOut, this, &TimeMaster::OnSignOut);
@@ -155,6 +164,75 @@ int TimeMaster::SaveProject()
     return 0;
 }
 
+int TimeMaster::SaveSelected(std::vector<unsigned> vec)
+{
+    if (vec.size()==0) return 0;
+    QFile file(Filename);
+    if (!file.open(QIODevice::WriteOnly| QIODevice::Truncate | QIODevice::Text)) return -1;
+    QTextStream stream(&file);
+    QDate first = _events[vec[0]]->GetDateStart();
+    QDate second = first;
+    foreach(auto id, vec)
+    {
+        Event* event = _events[id];
+        if (event->GetDateStart()<first)
+        {
+            first=event->GetDateStart();
+            continue;
+        }
+        if (event->isDual && event->GetDateEnd()>second)
+        {
+            second = event->GetDateStart();
+            continue;
+        }
+        if (event->GetDateStart()>second) second = event->GetDateStart();
+    }
+    int b = findPosition(second);
+    for (int i = findPosition(first);i<=b;i++) _timelines[i]->Save(stream);
+    foreach(auto event, vec) _events[event]->Save(stream);
+    stream.flush();
+    file.close();
+    return 0;
+}
+
+
+std::vector<Event*> TimeMaster::AddFromFile(QString filename, bool AddTimelines)
+{
+    auto toRet = std::vector<Event*>();
+    QFile file(filename);
+    QFileInfo fileInfo(file.fileName());
+    QString superTag(fileInfo.fileName());
+    superTag = "_"+superTag;
+    if (!file.open(QIODevice::ReadOnly| QIODevice::Text)) return toRet;
+    QTextStream stream(&file);
+    StreamReader reader;
+    try
+    {
+        reader.ReadingLoop(stream,!AddTimelines,this);
+    }
+    catch(QString info)
+    {
+        file.close();
+        throw info;
+    }
+    foreach(auto timeline, reader.TimelineList) AddTimeline(timeline);
+    foreach(auto event, reader.EventList)
+    {
+        QString ignore;
+        if (-1==AddEvent(event,ignore))
+        {
+            delete event;
+        };
+        event->AddTag(superTag,ignore);
+        event->ProvideBoss(tags);
+        toRet.push_back(event);
+    }
+    stream.flush();
+    file.close();
+    updateLength();
+    return toRet;
+}
+
 
 
 void TimeMaster::updateLength()
@@ -173,12 +251,12 @@ void TimeMaster::UpdateEventsReals()
     foreach (auto event, _events)
     {
         while (!_timelines[i]->Contains(event->GetDateStart())) i++;
-        event->realPos = _timelines[i]->GetReal(event->GetDateStart());
+        event->realPos = _timelines[i]->GetReal(event->GetDateStart())+_timelines[i]->GetStartRel();
         if (event->isDual)
         {
             int j = i;
             while (!_timelines[j]->Contains(event->GetDateEnd())) j++;
-            event->isDual = _timelines[j]->GetReal(event->GetDateEnd());
+            event->isDual = _timelines[j]->GetReal(event->GetDateEnd())+_timelines[j]->GetStartRel();
         }
     }
 }

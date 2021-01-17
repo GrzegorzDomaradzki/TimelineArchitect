@@ -103,12 +103,14 @@ void EventFrame::ResetData()
     ui->TitleLab->setText(_event->name);
     ui->DescLab->setText(_event->text);
     auto start = _event->GetDateStart();
-    QString date = QString::number(start.year()) +"." + QString::number(start.month()) +"." +QString::number(start.day());
+    auto date = QString::number(start.day()) +"." + QString::number(start.month()) +"." +QString::number(abs(start.year()));
+    if (start.year()<0) date+="BCE";
     if(_event->IsBinary()) ui->DateLab->setText(date);
     else
     {
         auto end = _event->GetDateEnd();
-        date += " <-> " +  QString::number(end.year()) +"." + QString::number(end.month()) +"." +QString::number(end.day());
+        date += " <-> " +  QString::number(end.day()) +"." + QString::number(end.month()) +"." +QString::number(abs(end.year()));
+        if (start.year()<0) date+="BCE";
         ui->DateLab->setText(date);
     }
     auto size = ui->TitleLab->sizeHint().width()+10;
@@ -117,12 +119,17 @@ void EventFrame::ResetData()
     this->resize(size,height());
 }
 
+unsigned EventFrame::getBackendID()
+{
+    return _event->id;
+}
+
 
 
 
 void EventFrame::mousePressEvent(QMouseEvent *event)
 {
-    emit RewerseRepaint();
+    emit RewerseRepaint(0);
     _offset = event->pos();
     this->raise();
 }
@@ -159,12 +166,12 @@ void EventFrame::mouseReleaseEvent(QMouseEvent *event)
         pos = pos+height() - par->height();
         if (pos>0)this->move(mapToParent(event->pos() - QPoint(0,pos) - _offset));
     }
-    emit RewerseRepaint();
+    emit RewerseRepaint(1);
 }
 
 void EventFrame::mouseDoubleClickEvent(QMouseEvent*)
 {
-
+    emit RewerseRepaint(1);
     NewEvent dialog(false,_event);
     dialog.SetMaster(nullptr);
     dialog.exec();

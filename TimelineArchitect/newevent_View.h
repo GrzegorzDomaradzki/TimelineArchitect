@@ -35,6 +35,7 @@ public:
     void SetDateEnd(QDate);
     void InfoBox(QString info);
     void SetTags();
+    void SetEnabled(bool state);
 
     void SetMaster(TimeMaster* master);
 

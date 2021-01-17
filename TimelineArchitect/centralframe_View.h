@@ -59,6 +59,7 @@ public:
     void ShowAll();
     void Purge();
     void SetSelectedColor(QColor);
+    std::vector<unsigned> SelectedBackednIDs();
 
 
     void AddHim(unsigned int id,bool add);
@@ -84,7 +85,7 @@ private:
     QColor _selectedColor;
 
 public slots:
-    void OnRewersePaint();
+    void OnRewersePaint(int);
 
     void OnAddMe(unsigned int id,bool add);
 };

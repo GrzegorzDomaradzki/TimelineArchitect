@@ -1019,6 +1019,9 @@ alternate-background-color: rgb(211, 215, 207);</string>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout" stretch="1,2">
+       <property name="spacing">
+        <number>10</number>
+       </property>
        <item>
         <widget class="QLabel" name="TitleLab">
          <property name="maximumSize">

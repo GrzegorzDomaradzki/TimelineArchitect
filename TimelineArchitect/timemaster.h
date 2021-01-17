@@ -5,6 +5,7 @@
 #include <tags.h>
 #include <timeline.h>
 #include <event.h>
+#include "streamReader.h"
 
 
 #include <QObject>
@@ -12,6 +13,7 @@
 #include <QFile>
 #include <memory>
 #include <QTextStream>
+#include <QFileInfo>
 
 
 class TimeMaster : public QObject
@@ -39,12 +41,14 @@ public:
      int findEventPosition(QDate date);
 
      int AddTimeline(Timeline*);
+     QStringList ListActiveTags();
 
 
      int AddEvent(Event* event,QString& info, bool conn = 1);
 
      int SaveProject();
-     int LoadProject();
+     int SaveSelected(std::vector<unsigned>);
+     std::vector<Event*> AddFromFile(QString file, bool AddTimelines);
      unsigned getLength();
      void updateLength();
      void UpdateEventsReals();
