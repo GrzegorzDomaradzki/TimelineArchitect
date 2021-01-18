@@ -38,53 +38,28 @@ private slots:
 
 
     void on_actionEmpty_project_triggered();
-
     void on_AddTagButt_clicked();
-
     void on_actionAdd_timeline_triggered();
-
     void on_actionAdd_Event_triggered();
-
     void on_actionAdd_Tag_triggered();
-
     void on_TagList_doubleClicked(const QModelIndex &index);
-
     void on_EraseTagButt_2_clicked();
-
     void on_actionErase_selected_triggered();
-
-
-
     void on_SelectButton_clicked();
-
     void on_SelectOnlyButton_clicked();
-
     void on_UnselectButton_clicked();
-
     void on_HideButton_clicked();
-
     void on_ShowButton_clicked();
-
     void on_ShowAllButton_clicked();
-
     void on_actionChange_resolution_triggered();
-
     void on_actionChange_color_triggered();
-
     void on_actionReset_selection_triggered();
-
     void on_actionChange_selected_color_triggered();
-
     void on_actionSave_triggered();
-
     void on_actionSave_as_triggered();
-
     void on_actionSave_selected_as_triggered();
-
     void on_actionOpen_from_file_triggered();
-
     void on_actionAdd_from_file_triggered();
-
     void on_actionAdd_with_timelines_from_file_triggered();
 
 signals:

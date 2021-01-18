@@ -120,7 +120,7 @@ void Event::Save(QTextStream &out)
 void Event::Unregister()
 {
     emit SignOut(id);
-    deleteLater();
+
 }
 
 void Event::ReregisterTags()
@@ -154,12 +154,12 @@ Event::Event(QObject *parent) : QObject(parent)
     throw "not enough data";
 }
 
-Event::Event(Tags* boss,QDate start, QObject *parent): QObject(parent),_startDate(start),_Tags(boss), _x(-1),_y(-1), isDual(0)
+Event::Event(Tags* boss,QDate start, QObject *parent): QObject(parent),_startDate(start),_Tags(boss), isDual(0)
 {
     color = Qt::lightGray;
 }
 
-Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),_Tags(boss), _x(-1),_y(-1),isDual(1)
+Event::Event(Tags* boss,QDate start, QDate end, QObject *parent): QObject(parent), _startDate(start),_endDate(end),_Tags(boss),isDual(1)
 {
     color = Qt::lightGray;
 }

@@ -90,6 +90,7 @@ void CentralFrame::EraseSelected()
         foreach(auto selected, _selected)
         {
             _eventsViews[selected]->SayGoodbye();
+            delete _eventsViews[selected];
             _eventsViews.remove(selected);
         }
         _selected.clear();
@@ -102,7 +103,7 @@ void CentralFrame::paintEvent(QPaintEvent *)
     if (_end==0) return;
     auto painter = new QPainter(this);
     painter->setPen(QPen(color,3));
-    painter->setFont(QFont("Arial",12));
+    painter->setFont(QFont("Arial",_resolution+_resolution/4));
     auto startPos = 0;
     int endPos;
     if (width()>_end-(int)_relativePosition) endPos=_end-_relativePosition;
@@ -331,9 +332,11 @@ void CentralFrame::ShowAll()
 void CentralFrame::Purge()
 {
     _selected.clear();
+    _end = 0;
     _generator = 0;
     foreach (auto event, _eventsViews) delete event;
     _eventsViews.clear();
+    Redraw();
 }
 
 void CentralFrame::SetSelectedColor(QColor color)

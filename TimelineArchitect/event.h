@@ -20,7 +20,6 @@ private:
 
         QStringList _ownedTags;
         Tags* _Tags;
-        int _x,_y;
 
 public:
         QString text;

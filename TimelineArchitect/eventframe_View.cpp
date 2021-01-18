@@ -33,7 +33,7 @@ EventFrame::EventFrame(unsigned new_id, Event *event, QWidget *parent):
 //    ui->DateLab->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 //    ui->TitleLab->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 //    this->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    _color = event->color;
+
     _markedColor = Qt::red;
     _id = new_id;
     _event = event;
@@ -91,13 +91,14 @@ void EventFrame::ChangeRadio()
 void EventFrame::SayGoodbye()
 {
     _event->Unregister();
-    deleteLater();
+    delete _event;
     this->close();
 }
 
 void EventFrame::ResetData()
 {
     QPalette pal = this->palette();
+    _color = _event->color;
     pal.setColor(QPalette::Window, _color);
     this->setPalette(pal);
     ui->TitleLab->setText(_event->name);

@@ -97,7 +97,7 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     i++;
     if (i!=(int)_timelines.size())
     {
-        _timelines[i]->ShrinkLeft(timeline->GetStart());
+        _timelines[i]->ShrinkLeft(timeline->GetEnd());
         //timeline->Grow(_timelines[i]->GetEnd());
         //edycja
         for (;i<(int)_timelines.size();i++)
@@ -118,7 +118,7 @@ int TimeMaster::AddTimeline(Timeline* timeline)
     if (!control)
     {
         UpdateEventsReals();
-        updateLength();
+        //updateLength();
     }
     return 0;
 }
@@ -222,6 +222,7 @@ std::vector<Event*> TimeMaster::AddFromFile(QString filename, bool AddTimelines)
         if (-1==AddEvent(event,ignore))
         {
             delete event;
+            continue;
         };
         event->AddTag(superTag,ignore);
         event->ProvideBoss(tags);

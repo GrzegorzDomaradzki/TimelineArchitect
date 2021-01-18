@@ -65,7 +65,6 @@ void MainWindow::on_actionEmpty_project_triggered()
     _timeEngine = new TimeMaster(this);
     _centralFrame->timeEngine = _timeEngine;
     _centralFrame->Purge();
-    _centralFrame->UpdateTimelineData();
     tagList->setStringList(_timeEngine->ListActiveTags());
 }
 
@@ -98,8 +97,7 @@ void MainWindow::on_actionAdd_timeline_triggered()
     dialog.setModal(true);
     dialog.SetMaster(_timeEngine);
     dialog.exec();
-
-    _centralFrame->UpdateTimelineData();
+    if (_timeEngine->TimelineCount()>0)_centralFrame->UpdateTimelineData();
 }
 
 void MainWindow::on_actionAdd_Event_triggered()
@@ -300,7 +298,7 @@ void MainWindow::on_actionAdd_from_file_triggered()
     std::vector<Event*> vec;
     vec.clear();
     try {
-         _timeEngine->AddFromFile(newName,0);
+         vec = _timeEngine->AddFromFile(newName,0);
     } catch (QString info) {
         QMessageBox msgBox;
         msgBox.setText(info);
